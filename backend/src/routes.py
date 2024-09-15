@@ -1,7 +1,6 @@
-# app/routes.py
 from flask import current_app as app, request, jsonify
 from src import db
-from src.models import Order
+from src.models import Order, Product
 
 
 @app.route("/orders", methods=["POST"])
@@ -45,3 +44,29 @@ def get_orders():
         return jsonify({"orders": orders_list}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+
+@app.route("/products", methods=["GET"])
+def get_products():
+    products = Product.query.all()
+    return jsonify({"products": [product.to_dict() for product in products]})
+
+
+@app.route("/products/<int:product_id>", methods=["GET"])
+def get_product(product_id):
+    product = Product.query.get_or_404(product_id)
+    return jsonify(product.to_dict())
+
+
+@app.route("/products", methods=["POST"])
+def add_product():
+    data = request.get_json()
+    new_product = Product(
+        name=data.get("name"),
+        image_url=data.get("image_url"),
+        description=data.get("description"),
+        price=data.get("price"),
+    )
+    db.session.add(new_product)
+    db.session.commit()
+    return jsonify(new_product.to_dict()), 201
