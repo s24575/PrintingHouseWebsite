@@ -1,5 +1,5 @@
 import React from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import Navbar from "./Navbar";
 import Register from "./Register";
 import Login from "./Login";
@@ -16,7 +16,7 @@ function App() {
       <CartProvider>
         <Navbar />
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<Navigate to="/products" replace />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
           <Route path="/orders" element={<OrderList />} />
@@ -28,10 +28,6 @@ function App() {
       </CartProvider>
     </div>
   );
-}
-
-function Home() {
-  return <h1>Welcome to the Printing House</h1>;
 }
 
 export default App;

@@ -1,6 +1,6 @@
 .order {
     max-width: 600px;
-    margin: 0 auto;
+    margin: 20px auto;
     padding: 20px;
     background-color: #fff;
     border-radius: 10px;
@@ -31,6 +31,7 @@
     font-size: 14px;
     border: 1px solid #ddd;
     border-radius: 6px;
+    box-sizing: border-box;
     transition: border-color 0.3s ease;
   }
 
@@ -46,8 +47,9 @@
   }
 
   .delivery-card {
+    appearance: none;
     flex: 1;
-    padding: 15px;
+    padding: 8px;
     border: 1px solid #ddd;
     border-radius: 6px;
     text-align: center;
@@ -74,7 +76,18 @@
 
   .delivery-card p {
     font-size: 12px;
+    margin: 0 6px;
     color: #666;
+  }
+
+  .hidden-radio {
+    appearance: none;
+    position: absolute;
+    width: 0;
+    height: 0;
+    margin: 0;
+    padding: 0;
+    opacity: 0;
   }
 
   .submit-order {

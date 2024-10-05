@@ -1,40 +1,110 @@
 .navbar {
-    background-color: #333;
-    color: white;
-    padding: 1rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
+  background-color: #333;
+  color: white;
+  padding: 0rem 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
 
-  .navbar-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-  }
+.navbar-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
 
-  .navbar-logo a {
-    color: white;
-    font-size: 1.5rem;
-    font-weight: bold;
-    text-decoration: none;
-  }
+.navbar-logo {
+  color: white;
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-decoration: none;
+}
 
-  .navbar-menu {
-    list-style: none;
-    display: flex;
-    gap: 1rem;
-  }
+.navbar-menu {
+  list-style: none;
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
 
-  .navbar-item a {
-    color: white;
-    text-decoration: none;
-    padding: 0.5rem 1rem;
-    border-radius: 5px;
-    transition: background-color 0.3s;
-  }
+.navbar-item {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+}
 
-  .navbar-item a:hover {
-    background-color: #575757;
-  }
+.navbar-item:hover {
+  background-color: #575757;
+}
+
+.navbar-item a {
+  color: white;
+  text-decoration: none;
+  height: 100%;
+  align-items: center;
+}
+
+.cart-link {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.cart-icon {
+  height: 100%;
+  width: 100%;
+}
+
+.cart-count {
+  margin-left: 0.3rem;
+  font-size: 0.8rem;
+  background-color: #808080; /* Muted gray to make it less distracting */
+  color: white;
+  border-radius: 50%;
+  padding: 0.2rem 0.4rem;
+  position: absolute;
+  top: -5px;
+  right: -10px;
+  line-height: 1;
+}
+
+.profile-container {
+  position: relative;
+  cursor: pointer;
+}
+
+.profile-container svg {
+  vertical-align: middle;
+}
+
+.profile-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: #444;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  border-radius: 5px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.profile-item {
+  margin: 0;
+}
+
+.profile-item a {
+  color: white;
+  text-decoration: none;
+  display: block;
+  padding: 10px;
+  transition: background-color 0.3s;
+}
+
+.profile-item a:hover {
+  background-color: #575757;
+}

@@ -4,7 +4,7 @@ import { CartContext } from "./CartContext";
 import "./Cart.css";
 
 function Cart() {
-  const { cart } = useContext(CartContext);
+  const { cart, removeFromCart } = useContext(CartContext);
 
   if (cart.length === 0) {
     return <p>Your cart is empty.</p>;
@@ -14,9 +14,15 @@ function Cart() {
     <div className="cart">
       <h1>Your Cart</h1>
       {cart.map((item) => (
-        <div key={item.id} className="cart-item">
+        <div key={item.cartItemId} className="cart-item">
           <h2>{item.name}</h2>
-          <p>Price: ${item.price}</p>
+          <p>{item.price} PLN</p>
+          <button
+            className="remove-button"
+            onClick={() => removeFromCart(item.cartItemId)}
+          >
+            Remove
+          </button>
         </div>
       ))}
       <Link to="/order" className="checkout-button">

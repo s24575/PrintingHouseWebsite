@@ -1,4 +1,5 @@
 import React, { createContext, useState, useEffect } from "react";
+import { v4 as uuidv4 } from "uuid";
 
 export const CartContext = createContext();
 
@@ -13,11 +14,14 @@ export function CartProvider({ children }) {
   }, [cart]);
 
   const addToCart = (product) => {
-    setCart((prevCart) => [...prevCart, product]);
+    const productWithUniqueId = { ...product, cartItemId: uuidv4() };
+    setCart((prevCart) => [...prevCart, productWithUniqueId]);
   };
 
-  const removeFromCart = (productId) => {
-    setCart((prevCart) => prevCart.filter((item) => item.id !== productId));
+  const removeFromCart = (cartItemId) => {
+    setCart((prevCart) =>
+      prevCart.filter((item) => item.cartItemId !== cartItemId)
+    );
   };
 
   return (

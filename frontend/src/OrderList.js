@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import "./OrderList.css";
 
 function OrderList() {
   const [orders, setOrders] = useState([]);
@@ -23,7 +24,7 @@ function OrderList() {
   }, []);
 
   return (
-    <div>
+    <div className="order-list">
       <h1>Your Orders</h1>
       <ul>
         {orders.map((order) => (
