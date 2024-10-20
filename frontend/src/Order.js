@@ -1,34 +1,21 @@
 import React, { useState, useContext } from "react";
 import { CartContext } from "./CartContext";
 import "./Order.css";
+import { useNavigate } from "react-router-dom";
 
 function Order() {
-  const { cart } = useContext(CartContext);
+  const { cart, calculateTotal } = useContext(CartContext);
   const [deliveryOption, setDeliveryOption] = useState("local");
   const [email, setEmail] = useState("");
+  const navigate = useNavigate();
 
   const [city, setCity] = useState("");
   const [street, setStreet] = useState("");
   const [houseNumber, setHouseNumber] = useState("");
   const [postalCode, setPostalCode] = useState("");
 
-  const calculateTotal = () => {
-    return cart.reduce((sum, item) => sum + item.price, 0).toFixed(2);
-  };
-
   const handleSubmitOrder = () => {
-    const orderDetails = {
-      email,
-      deliveryOption,
-      address:
-        deliveryOption !== "local"
-          ? { city, street, houseNumber, postalCode }
-          : null,
-      cartItems: cart,
-      totalPrice: calculateTotal(),
-    };
-    console.log("Order placed with details: ", orderDetails);
-    alert("Order placed successfully!");
+    navigate("/payment");
   };
 
   return (

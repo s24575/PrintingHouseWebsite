@@ -1,11 +1,14 @@
+import os
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_cors import CORS
+import stripe
 from src.config import Config
 
 db = SQLAlchemy()
 migrate = Migrate()
+stripe.api_key = os.getenv("STRIPE_API_KEY")
 
 
 def create_app(config_class=Config):

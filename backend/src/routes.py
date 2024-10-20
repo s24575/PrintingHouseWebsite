@@ -1,4 +1,5 @@
 from flask import current_app as app, request, jsonify
+import stripe
 from src import db
 from src.models import Order, Product
 
@@ -70,3 +71,30 @@ def add_product():
     db.session.add(new_product)
     db.session.commit()
     return jsonify(new_product.to_dict()), 201
+
+
+@app.route("/create-payment-intent", methods=["POST"])
+def create_payment_intent():
+    try:
+        data = request.get_json()
+
+        amount = data.get("amount")
+        currency = data.get("currency")
+        customer_email = data.get("email", None)
+
+        if not amount:
+            return jsonify({"error": "Missing payment amount"}), 400
+
+        if not amount:
+            return jsonify({"error": "Missing currency"}), 400
+
+        payment_intent = stripe.PaymentIntent.create(
+            amount=int(amount),
+            currency=currency,
+            receipt_email=customer_email,
+            metadata={"integration_check": "accept_a_payment"},
+        )
+
+        return jsonify({"client_secret": payment_intent["client_secret"]})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500

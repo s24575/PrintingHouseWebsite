@@ -24,8 +24,14 @@ export function CartProvider({ children }) {
     );
   };
 
+  const calculateTotal = () => {
+    return cart.reduce((sum, item) => sum + item.price, 0).toFixed(2);
+  };
+
   return (
-    <CartContext.Provider value={{ cart, addToCart, removeFromCart }}>
+    <CartContext.Provider
+      value={{ cart, addToCart, removeFromCart, calculateTotal }}
+    >
       {children}
     </CartContext.Provider>
   );

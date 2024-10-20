@@ -1,0 +1,67 @@
+.payment-page {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  }
+
+  .payment-page h1 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 20px;
+  }
+
+  .payment-form {
+    margin-bottom: 20px;
+  }
+
+  .payment-form label {
+    display: block;
+    font-size: 14px;
+    font-weight: 600;
+    color: #444;
+    margin-bottom: 6px;
+  }
+
+  .payment-form input {
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    box-sizing: border-box;
+    transition: border-color 0.3s ease;
+  }
+
+  .payment-form input:focus {
+    border-color: #28a745;
+    outline: none;
+  }
+
+  .StripeElement {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background-color: #f9f9f9;
+    margin-bottom: 20px;
+  }
+
+  .payment-submit {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    font-weight: bold;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+
+  .payment-submit:hover {
+    background-color: #218838;
+    transform: translateY(-2px);
+  }
