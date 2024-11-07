@@ -25,12 +25,12 @@ function Products() {
       <div className="products-grid">
         {products.map((product) => (
           <Link
-            key={product.id}
-            to={`/products/${product.id}`}
+            key={product.product_id}
+            to={`/products/${product.product_id}`}
             className="product-tile"
           >
             <img
-              src={product.imageUrl}
+              src={product.image_url}
               alt={product.name}
               className="product-image"
             />
