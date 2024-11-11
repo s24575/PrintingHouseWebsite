@@ -35,9 +35,7 @@ class CompanyDetail(db.Model):
     __tablename__ = "company_details"
     company_details_id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey("users.user_id"), nullable=False)
-    address_id = db.Column(
-        db.Integer, db.ForeignKey("addresses.address_id"), nullable=False
-    )
+    address_id = db.Column(db.Integer, db.ForeignKey("addresses.address_id"), nullable=False)
     name = db.Column(db.String(255), nullable=False)
     acronym = db.Column(db.String(255), nullable=False)
     bank_name = db.Column(db.String(255), nullable=False)
@@ -48,9 +46,7 @@ class CompanyDetail(db.Model):
     email = db.Column(db.String(255), nullable=False)
     discount_percentage = db.Column(DECIMAL(5, 2), nullable=False)
     is_archived = db.Column(db.Boolean, nullable=False)
-    created_at = db.Column(
-        TIMESTAMP, nullable=False, default=db.func.current_timestamp()
-    )
+    created_at = db.Column(TIMESTAMP, nullable=False, default=db.func.current_timestamp())
     modified_at = db.Column(
         TIMESTAMP,
         nullable=False,
@@ -95,9 +91,7 @@ class Dictionary(db.Model):
 class InvoiceItem(db.Model):
     __tablename__ = "invoice_items"
     invoice_item_id = db.Column(db.Integer, primary_key=True)
-    invoice_id = db.Column(
-        db.Integer, db.ForeignKey("invoices.invoice_id"), nullable=False
-    )
+    invoice_id = db.Column(db.Integer, db.ForeignKey("invoices.invoice_id"), nullable=False)
     item_description = db.Column(db.String(255), nullable=False)
     quantity = db.Column(db.Integer, nullable=False)
     unit_price = db.Column(DECIMAL(10, 2), nullable=False)
@@ -121,24 +115,16 @@ class InvoiceItem(db.Model):
 class Invoice(db.Model):
     __tablename__ = "invoices"
     invoice_id = db.Column(db.Integer, primary_key=True)
-    order_order_id = db.Column(
-        db.Integer, db.ForeignKey("orders.order_id"), nullable=False
-    )
-    company_details_id = db.Column(
-        db.Integer, db.ForeignKey("company_details.company_details_id"), nullable=False
-    )
-    billing_address_id = db.Column(
-        db.Integer, db.ForeignKey("addresses.address_id"), nullable=False
-    )
+    order_order_id = db.Column(db.Integer, db.ForeignKey("orders.order_id"), nullable=False)
+    company_details_id = db.Column(db.Integer, db.ForeignKey("company_details.company_details_id"), nullable=False)
+    billing_address_id = db.Column(db.Integer, db.ForeignKey("addresses.address_id"), nullable=False)
     invoice_number = db.Column(db.String(50), nullable=False)
     issue_date = db.Column(Date, nullable=False)
     due_date = db.Column(Date, nullable=False)
     total_amount = db.Column(DECIMAL(10, 2), nullable=False)
     vat_rate = db.Column(DECIMAL(5, 2), nullable=False)
     is_archived = db.Column(db.Boolean, nullable=False)
-    created_at = db.Column(
-        TIMESTAMP, nullable=False, default=db.func.current_timestamp()
-    )
+    created_at = db.Column(TIMESTAMP, nullable=False, default=db.func.current_timestamp())
     modified_at = db.Column(
         TIMESTAMP,
         nullable=False,
@@ -167,9 +153,7 @@ class ItemOption(db.Model):
     __tablename__ = "item_options"
     item_option_id = db.Column(db.Integer, primary_key=True)
     item_id = db.Column(db.Integer, db.ForeignKey("items.item_id"), nullable=False)
-    option_id = db.Column(
-        db.Integer, db.ForeignKey("options.option_id"), nullable=False
-    )
+    option_id = db.Column(db.Integer, db.ForeignKey("options.option_id"), nullable=False)
 
     def to_dict(self):
         return {
@@ -182,9 +166,7 @@ class ItemOption(db.Model):
 class Item(db.Model):
     __tablename__ = "items"
     item_id = db.Column(db.Integer, primary_key=True)
-    product_id = db.Column(
-        db.Integer, db.ForeignKey("products.product_id"), nullable=False
-    )
+    product_id = db.Column(db.Integer, db.ForeignKey("products.product_id"), nullable=False)
     order_id = db.Column(db.Integer, db.ForeignKey("orders.order_id"), nullable=True)
     cart_user_id = db.Column(db.Integer, db.ForeignKey("users.user_id"), nullable=True)
     name = db.Column(db.String(255), nullable=False)
@@ -192,9 +174,7 @@ class Item(db.Model):
     price = db.Column(DECIMAL(10, 2), nullable=False)
     user_comment = db.Column(db.Text, nullable=False)
 
-    options = db.relationship(
-        "ItemOption", backref="item", cascade="all, delete-orphan"
-    )
+    options = db.relationship("ItemOption", backref="item", cascade="all, delete-orphan")
 
     def to_dict(self):
         return {
@@ -212,9 +192,7 @@ class Item(db.Model):
 class OptionGroup(db.Model):
     __tablename__ = "option_groups"
     option_group_id = db.Column(db.Integer, primary_key=True)
-    product_id = db.Column(
-        db.Integer, db.ForeignKey("products.product_id"), nullable=False
-    )
+    product_id = db.Column(db.Integer, db.ForeignKey("products.product_id"), nullable=False)
     name = db.Column(db.String(255), nullable=False)
     type = db.Column(Enum("select", "number"), nullable=False)
     title = db.Column(db.String(255), nullable=False)
@@ -234,9 +212,7 @@ class OptionGroup(db.Model):
 class Option(db.Model):
     __tablename__ = "options"
     option_id = db.Column(db.Integer, primary_key=True)
-    option_group_id = db.Column(
-        db.Integer, db.ForeignKey("option_groups.option_group_id"), nullable=False
-    )
+    option_group_id = db.Column(db.Integer, db.ForeignKey("option_groups.option_group_id"), nullable=False)
     name = db.Column(db.String(255), nullable=False)
     price_increment = db.Column(DECIMAL(10, 2), nullable=False)
 
@@ -253,14 +229,10 @@ class Order(db.Model):
     __tablename__ = "orders"
     order_id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey("users.user_id"), nullable=False)
-    delivery_address_id = db.Column(
-        db.Integer, db.ForeignKey("addresses.address_id"), nullable=False
-    )
+    delivery_address_id = db.Column(db.Integer, db.ForeignKey("addresses.address_id"), nullable=False)
     delivery_method = db.Column(Enum("local", "inpost", "dhl"), nullable=False)
     total_price = db.Column(DECIMAL(10, 2), nullable=False)
-    created_at = db.Column(
-        TIMESTAMP, nullable=False, default=db.func.current_timestamp()
-    )
+    created_at = db.Column(TIMESTAMP, nullable=False, default=db.func.current_timestamp())
     modified_at = db.Column(
         TIMESTAMP,
         nullable=False,
@@ -290,9 +262,7 @@ class Product(db.Model):
     base_price = db.Column(DECIMAL(10, 2), nullable=False)
     weight = db.Column(DECIMAL(10, 2), nullable=False)
     is_archived = db.Column(db.Boolean, nullable=False)
-    created_at = db.Column(
-        TIMESTAMP, nullable=False, default=db.func.current_timestamp()
-    )
+    created_at = db.Column(TIMESTAMP, nullable=False, default=db.func.current_timestamp())
     modified_at = db.Column(
         TIMESTAMP,
         nullable=False,
@@ -321,9 +291,7 @@ class User(db.Model):
     username = db.Column(db.String(255), nullable=False)
     email = db.Column(db.String(255), nullable=False)
     password_hash = db.Column(db.String(255), nullable=False)
-    created_at = db.Column(
-        TIMESTAMP, nullable=False, default=db.func.current_timestamp()
-    )
+    created_at = db.Column(TIMESTAMP, nullable=False, default=db.func.current_timestamp())
     modified_at = db.Column(
         TIMESTAMP,
         nullable=False,

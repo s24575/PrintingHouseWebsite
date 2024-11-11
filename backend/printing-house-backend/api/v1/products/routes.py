@@ -25,14 +25,10 @@ def get_product_details(product_id):
             "option_group": option_group.to_dict(),
             "options": [
                 option.to_dict()
-                for option in Option.query.filter_by(
-                    option_group_id=option_group.option_group_id
-                ).all()
+                for option in Option.query.filter_by(option_group_id=option_group.option_group_id).all()
             ],
         }
         for option_group in option_groups
     }
 
-    return ProductDetailsResponse(
-        product=product.to_dict(), all_options=all_options
-    ).model_dump_json()
+    return ProductDetailsResponse(product=product.to_dict(), all_options=all_options).model_dump_json()

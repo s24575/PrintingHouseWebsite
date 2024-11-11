@@ -24,9 +24,7 @@ def calculate_price(product_id: int, selected_options: dict[int, Any]) -> Decima
         match option_group_type:
             case OptionGroupType.Select:
                 if not isinstance(value, int):
-                    raise ValueError(
-                        f"Value for {OptionGroupType.Select} type has to be a primary key to an option"
-                    )
+                    raise ValueError(f"Value for {OptionGroupType.Select} type has to be a primary key to an option")
                 option_id = value
                 option: Option = Option.query.get(option_id)
 
@@ -35,9 +33,7 @@ def calculate_price(product_id: int, selected_options: dict[int, Any]) -> Decima
                 total_price += option.price_increment
             case OptionGroupType.Number:
                 if not isinstance(value, int):
-                    raise ValueError(
-                        f"Value for {OptionGroupType.Number} type has to be a number"
-                    )
+                    raise ValueError(f"Value for {OptionGroupType.Number} type has to be a number")
                 if option_group.name == "ilosc":
                     total_price *= value
 
