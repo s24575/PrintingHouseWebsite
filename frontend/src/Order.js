@@ -137,14 +137,14 @@ function Order() {
 
       <div className="price-summary">
         <h2>Order Summary</h2>
-        {cart.map((item, index) => (
+        {cart.items.map((item, index) => (
           <div key={`${item.id}-${index}`} className="summary-item">
             <p>{item.name}</p>
-            <p>${item.price}</p>
+            <p>{item.price} PLN</p>
           </div>
         ))}
         <hr />
-        <p className="total-price">Total: ${calculateTotal()}</p>
+        <p className="total-price">Total: {cart.total} PLN</p>
       </div>
 
       <button className="submit-order" onClick={handleSubmitOrder}>

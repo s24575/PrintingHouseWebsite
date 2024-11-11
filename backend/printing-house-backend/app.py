@@ -1,24 +1,18 @@
-import os
 from flask import Flask, jsonify
 from flask_cors import CORS
 from pydantic import ValidationError
-import stripe
 
-from src.db.db import init_db
-from src.api.v1.carts.routes import carts_blueprint
-from src.api.v1.products.routes import products_blueprint
-
-
-class Config:
-    SECRET_KEY = os.environ.get("PRINTING_HOUSE_SECRET_KEY")
-    SQLALCHEMY_DATABASE_URI = os.environ.get("PRINTING_HOUSE_DATABASE_URI")
+import settings
+from api.v1.carts.routes import carts_blueprint
+from api.v1.products.routes import products_blueprint
+from db.db import db
 
 
 def create_app() -> Flask:
     app = Flask(__name__)
     CORS(app)
-    app.config.from_object(Config)
-    init_db(app)
+    settings.init_app(app)
+    db.init_app(app)
     _register_blueprints(app)
     _register_error_handlers(app)
     return app
@@ -35,11 +29,3 @@ def _register_error_handlers(app: Flask) -> None:
         response = jsonify({"error": "Validation error", "messages": error.errors()})
         response.status_code = 422
         return response
-
-
-stripe.api_key = os.getenv("STRIPE_API_KEY")
-app = create_app()
-
-
-if __name__ == "__main__":
-    app.run(debug=True)

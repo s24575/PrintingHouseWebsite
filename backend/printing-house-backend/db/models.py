@@ -187,9 +187,14 @@ class Item(db.Model):
     )
     order_id = db.Column(db.Integer, db.ForeignKey("orders.order_id"), nullable=True)
     cart_user_id = db.Column(db.Integer, db.ForeignKey("users.user_id"), nullable=True)
+    name = db.Column(db.String(255), nullable=False)
     quantity = db.Column(db.Integer, nullable=False)
     price = db.Column(DECIMAL(10, 2), nullable=False)
     user_comment = db.Column(db.Text, nullable=False)
+
+    options = db.relationship(
+        "ItemOption", backref="item", cascade="all, delete-orphan"
+    )
 
     def to_dict(self):
         return {
@@ -197,6 +202,7 @@ class Item(db.Model):
             "product_id": self.product_id,
             "order_id": self.order_id,
             "cart_user_id": self.cart_user_id,
+            "name": self.name,
             "quantity": self.quantity,
             "price": str(self.price),
             "user_comment": self.user_comment,

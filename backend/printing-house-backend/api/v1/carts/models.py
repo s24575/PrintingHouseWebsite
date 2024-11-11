@@ -1,8 +1,11 @@
+from typing import Any
+
 from pydantic import BaseModel
 
 
 class GetCartItemsData(BaseModel):
     product_id: int
+    name: str
     price: float
     quantity: int
     user_comment: str | None
@@ -11,21 +14,24 @@ class GetCartItemsData(BaseModel):
         from_attributes = True
 
 
-class AddCartItemsData(BaseModel):
+class AddCartItemData(BaseModel):
     product_id: int
+    name: str
     quantity: int
-    user_comment: str | None
+    user_comment: str = ""
+    selected_options: dict[int, Any]
 
     class Config:
         from_attributes = True
 
 
 class CartItemsRequest(BaseModel):
-    cart: AddCartItemsData
+    cart: AddCartItemData
 
 
 class CartItemsResponse(BaseModel):
-    cart: list[AddCartItemsData]
+    items: list[GetCartItemsData]
+    total: float
 
 
 class DeleteCartItemData(BaseModel):

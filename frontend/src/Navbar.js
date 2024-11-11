@@ -31,7 +31,7 @@ function Navbar() {
               <IconContext.Provider value={{ className: "cart-icon" }}>
                 <FaShoppingCart size="25px" />
               </IconContext.Provider>
-              <span className="cart-count">{cart.length}</span>
+              <span className="cart-count">{cart.items.length}</span>
             </Link>
           </li>
 
@@ -39,7 +39,7 @@ function Navbar() {
             className="navbar-item profile-container"
             onClick={toggleProfileMenu}
           >
-            <CgProfile size="30px" />
+            <CgProfile size="30px " />
             {isProfileMenuOpen && (
               <ul className="profile-menu">
                 <li className="profile-item">

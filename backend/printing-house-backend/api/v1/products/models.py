@@ -1,7 +1,6 @@
-from typing import Any
 from pydantic import BaseModel
 
-from src.common.models import ProductModel
+from common.models import ProductModel
 
 
 class CreateProductData(BaseModel):

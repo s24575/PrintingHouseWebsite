@@ -17,6 +17,13 @@ function ProductDetails() {
         );
         const data = await response.json();
         setProduct(data);
+
+        const defaultOptions = {};
+        Object.values(data.all_options).forEach((optionGroup) => {
+          defaultOptions[optionGroup.option_group.option_group_id] =
+            optionGroup.default || 1;
+        });
+        setSelectedOptions(defaultOptions);
       } catch (error) {
         console.error("Error fetching product details:", error);
       }
@@ -28,7 +35,7 @@ function ProductDetails() {
   const handleOptionChange = (groupId, value) => {
     setSelectedOptions((prevOptions) => ({
       ...prevOptions,
-      [groupId]: value,
+      [groupId]: isNaN(value) ? value : parseInt(value),
     }));
   };
 
@@ -54,9 +61,7 @@ function ProductDetails() {
 
             {group.option_group.type === "select" && (
               <select
-                value={
-                  selectedOptions[group.option_group.option_group_id] || ""
-                }
+                value={selectedOptions[group.option_group.option_group_id]}
                 onChange={(e) =>
                   handleOptionChange(
                     group.option_group.option_group_id,
@@ -75,7 +80,7 @@ function ProductDetails() {
             {group.option_group.type === "number" && (
               <input
                 type="number"
-                value={selectedOptions[group.option_group.option_group_id] || 1}
+                value={selectedOptions[group.option_group.option_group_id]}
                 min="1"
                 onChange={(e) =>
                   handleOptionChange(
@@ -91,7 +96,7 @@ function ProductDetails() {
 
       <button
         className="order-button"
-        onClick={() => addToCart(product, Object.values(selectedOptions))}
+        onClick={() => addToCart(product, selectedOptions)}
       >
         Dodaj do koszyka
       </button>
