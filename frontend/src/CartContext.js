@@ -56,7 +56,7 @@ export function CartProvider({ children }) {
       const response = await fetch(`http://localhost:5000/cart/remove`, {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ user_id: 1, item_id: cartItemId }),
+        body: JSON.stringify({ "cart_item_id": cartItemId }),
       });
 
       if (!response.ok) {
@@ -65,7 +65,7 @@ export function CartProvider({ children }) {
 
       setCart((prevCart) => {
         const updatedItems = prevCart.items.filter(
-          (item) => item.item_id !== cartItemId
+          (item) => item.cart_item_id !== cartItemId
         );
         const updatedTotal = updatedItems.reduce(
           (sum, item) => sum + item.price * item.quantity,

@@ -4,7 +4,7 @@ import "./Order.css";
 import { useNavigate } from "react-router-dom";
 
 function Order() {
-  const { cart, calculateTotal } = useContext(CartContext);
+  const { cart } = useContext(CartContext);
   const [deliveryOption, setDeliveryOption] = useState("local");
   const [email, setEmail] = useState("");
   const navigate = useNavigate();

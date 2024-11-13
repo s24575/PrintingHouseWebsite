@@ -4,35 +4,28 @@ from pydantic import BaseModel
 
 
 class GetCartItemsData(BaseModel):
+    cart_item_id: int
     product_id: int
     name: str
     price: float
     quantity: int
-    user_comment: str | None
-
-    class Config:
-        from_attributes = True
 
 
 class AddCartItemData(BaseModel):
     product_id: int
     name: str
     quantity: int
-    user_comment: str = ""
-    selected_options: dict[int, Any]
+    selected_options: dict[int, int]
 
-    class Config:
-        from_attributes = True
+
+class DeleteCartItemData(BaseModel):
+    cart_item_id: int
 
 
 class CartItemsRequest(BaseModel):
     cart: AddCartItemData
 
 
-class CartItemsResponse(BaseModel):
+class GetCartItemsResponse(BaseModel):
     items: list[GetCartItemsData]
     total: float
-
-
-class DeleteCartItemData(BaseModel):
-    item_id: int

@@ -1,8 +1,10 @@
-from flask_sqlalchemy import SQLAlchemy
+import os
 
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
 
-db = SQLAlchemy()
+engine = create_engine(os.getenv("PRINTING_HOUSE_DATABASE_URI"))
 
+Session = sessionmaker(bind=engine)
 
-def init_app(app):
-    db.init_app(app)
+db = None

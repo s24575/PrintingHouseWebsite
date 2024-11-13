@@ -10,16 +10,18 @@ function Cart() {
     return <p>Your cart is empty.</p>;
   }
 
+  console.log(cart.items);
+
   return (
     <div className="cart">
       <h1>Your Cart</h1>
       {cart.items.map((item) => (
-        <div key={item.item_id} className="cart-item">
+        <div key={item.cart_item_id} className="cart-item">
           <h2>{item.name}</h2>
           <p>{item.price} PLN</p>
           <button
             className="remove-button"
-            onClick={() => removeFromCart(item.item_id)}
+            onClick={() => removeFromCart(item.cart_item_id)}
           >
             Remove
           </button>
