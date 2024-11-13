@@ -6,14 +6,12 @@ import settings
 from api.v1.carts.routes import carts_blueprint
 from api.v1.orders.routes import orders_blueprint
 from api.v1.products.routes import products_blueprint
-from db.db import db
 
 
 def create_app() -> Flask:
     app = Flask(__name__)
     CORS(app)
     settings.init_app(app)
-    # db.init_app(app)
     _register_blueprints(app)
     _register_error_handlers(app)
     return app

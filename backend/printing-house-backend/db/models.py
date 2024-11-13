@@ -1,4 +1,3 @@
-from typing import List
 from sqlalchemy import Enum, DECIMAL, Date, TIMESTAMP, Table, String, Integer, Boolean, Text, ForeignKey, func, Column
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
@@ -95,25 +94,23 @@ class Invoice(Base):
     )
 
 
-# class ItemOption(Base):
-#     __tablename__ = "item_options"
-#     item_option_id: Mapped[int] = mapped_column(Integer, primary_key=True)
-#     item_id: Mapped[int] = mapped_column(ForeignKey("items.item_id"), nullable=False)
-#     option_id: Mapped[int] = mapped_column(ForeignKey("options.option_id"), nullable=False)
-#
-#
-# class Item(Base):
-#     __tablename__ = "items"
-#     item_id: Mapped[int] = mapped_column(Integer, primary_key=True)
-#     product_id: Mapped[int] = mapped_column(ForeignKey("products.product_id"), nullable=False)
-#     order_id: Mapped[int | None] = mapped_column(ForeignKey("orders.order_id"), nullable=True)
-#     cart_user_id: Mapped[int | None] = mapped_column(ForeignKey("users.user_id"), nullable=True)
-#     name: Mapped[str] = mapped_column(String(255), nullable=False)
-#     quantity: Mapped[int] = mapped_column(Integer, nullable=False)
-#     price: Mapped[float] = mapped_column(DECIMAL(10, 2), nullable=False)
-#     user_comment: Mapped[str] = mapped_column(Text, nullable=False)
-#
-#     options: Mapped[List["ItemOption"]] = relationship("ItemOption", backref="item", cascade="all, delete-orphan")
+class ItemOption(Base):
+    __tablename__ = "item_options"
+    item_option_id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    item_id: Mapped[int] = mapped_column(ForeignKey("items.item_id"), nullable=False)
+    option_id: Mapped[int] = mapped_column(ForeignKey("options.option_id"), nullable=False)
+
+
+class Item(Base):
+    __tablename__ = "items"
+    item_id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    product_id: Mapped[int] = mapped_column(ForeignKey("products.product_id"), nullable=False)
+    order_id: Mapped[int] = mapped_column(ForeignKey("orders.order_id"), nullable=False)
+    name: Mapped[str] = mapped_column(String(255), nullable=False)
+    quantity: Mapped[int] = mapped_column(Integer, nullable=False)
+    price: Mapped[float] = mapped_column(DECIMAL(10, 2), nullable=False)
+
+    item_options: Mapped[list["ItemOption"]] = relationship("ItemOption", backref="Item", cascade="all, delete-orphan")
 
 
 cart_item_options = Table(
@@ -132,7 +129,7 @@ class CartItem(Base):
     quantity: Mapped[int] = mapped_column(Integer, nullable=False)
 
     product: Mapped["Product"] = relationship("Product")
-    options: Mapped[List["Option"]] = relationship("Option", secondary="cart_item_options")
+    options: Mapped[list["Option"]] = relationship("Option", secondary="cart_item_options")
 
 
 class OptionGroup(Base):
@@ -144,7 +141,7 @@ class OptionGroup(Base):
     title: Mapped[str] = mapped_column(String(255), nullable=False)
     is_mandatory: Mapped[bool] = mapped_column(Boolean, nullable=False)
 
-    options: Mapped[List["Option"]] = relationship()
+    options: Mapped[list["Option"]] = relationship()
 
 
 class Option(Base):
@@ -159,13 +156,19 @@ class Order(Base):
     __tablename__ = "orders"
     order_id: Mapped[int] = mapped_column(Integer, primary_key=True)
     user_id: Mapped[int] = mapped_column(ForeignKey("users.user_id"), nullable=False)
-    delivery_address_id: Mapped[int] = mapped_column(ForeignKey("addresses.address_id"), nullable=False)
-    delivery_method: Mapped[Enum] = mapped_column(Enum("local", "inpost", "dhl"), nullable=False)
+    delivery_address_id: Mapped[int] = mapped_column(ForeignKey("addresses.address_id"), nullable=True)
     total_price: Mapped[float] = mapped_column(DECIMAL(10, 2), nullable=False)
+    status: Mapped[Enum] = mapped_column(
+        Enum("new", "in_progress", "completed", "canceled"), nullable=True, default="new"
+    )
+    shipping_method: Mapped[Enum] = mapped_column(Enum("local", "inpost", "dhl"), nullable=False)
+    shipping_date: Mapped[str] = mapped_column(Date, nullable=False)
     created_at: Mapped[str] = mapped_column(TIMESTAMP, nullable=False, default=func.current_timestamp())
     modified_at: Mapped[str] = mapped_column(
         TIMESTAMP, nullable=False, default=func.current_timestamp(), onupdate=func.current_timestamp()
     )
+
+    items: Mapped[list["Item"]] = relationship()
 
 
 class Product(Base):
@@ -183,4 +186,4 @@ class Product(Base):
         TIMESTAMP, nullable=False, default=func.current_timestamp(), onupdate=func.current_timestamp()
     )
 
-    cart_items: Mapped[List["CartItem"]] = relationship()
+    cart_items: Mapped[list["CartItem"]] = relationship()

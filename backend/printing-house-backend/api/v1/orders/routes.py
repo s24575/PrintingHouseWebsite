@@ -1,44 +1,60 @@
+import datetime
+
 import stripe
 from flask import Blueprint, request, jsonify
+from sqlalchemy.orm import joinedload
 
 from api.v1.orders.models import OrderCreate
 from common.utils import calculate_price
-from db.db import db
-from db.models import Order
+from db.db import Session
+from db.models import Order, CartItem, Item
 
-orders_blueprint = Blueprint("orders", __name__)
+orders_blueprint = Blueprint("orders", __name__, url_prefix="/order")
 
 
-@orders_blueprint.route("/orders", methods=["POST"])
+@orders_blueprint.route("", methods=["POST"])
 def create_order():
-    data = OrderCreate.model_validate(request.json)
+    data: OrderCreate = OrderCreate.model_validate(request.json)
 
-    user_id = 1
-    items = Item.query.filter_by(cart_user_id=user_id).all()
+    with Session() as session:
+        cart_items = (
+            session.query(CartItem).options(joinedload(CartItem.product)).where(CartItem.user_id == data.user_id).all()
+        )
 
-    amount = calculate_price()
+        prices = [calculate_price(cart_item) for cart_item in cart_items]
+        total_price = sum(prices)
 
-    payment_intent = stripe.PaymentIntent.create(
-        amount=int(amount),
-        currency="pln",
-        receipt_email="a@a.a",
-        metadata={"integration_check": "accept_a_payment"},
-    )
+        payment_intent = stripe.PaymentIntent.create(
+            amount=int(total_price) * 100,
+            currency="pln",
+            receipt_email="a@a.a",
+            metadata={"integration_check": "accept_a_payment"},
+        )
 
-    order = Order(
-        user_id=data.user_id,
-        delivery_address_id=data.delivery_address_id,
-        delivery_method=data.delivery_method,
-        total_price=data.total_price,
-    )
-    db.session.add(order)
-    db.session.commit()
+        order = Order(
+            user_id=data.user_id,
+            delivery_address_id=data.delivery_address_id,
+            shipping_method=data.shipping_method,
+            total_price=total_price,
+            shipping_date=datetime.date.today(),
+        )
 
-    for item in items:
-        item.order_id = order.order_id
-        item.cart_user_id = None
-    db.session.add_all(items)
+        items = [
+            Item(
+                product_id=cart_item.product_id,
+                name=cart_item.product.name,
+                quantity=cart_item.quantity,
+                price=price,
+            )
+            for cart_item, price in zip(cart_items, prices)
+        ]
 
-    db.session.commit()
-    # return jsonify({"message": "Order created successfully", "order_id": order.order_id}), 201
+        order.items = items
+
+        for cart_item in cart_items:
+            session.delete(cart_item)
+
+        session.add(order)
+        session.commit()
+
     return jsonify({"client_secret": payment_intent["client_secret"]})
