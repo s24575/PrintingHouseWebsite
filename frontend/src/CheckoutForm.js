@@ -29,12 +29,16 @@ const CheckoutForm = () => {
       return;
     }
 
-    const res = await fetch("http://localhost:5000/create-payment-intent", {
+    const res = await fetch("http://localhost:5000/order", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ "amount": 1099, "currency": "pln" }),
+      body: JSON.stringify({
+        "user_id": 1,
+        "delivery_address_id": null,
+        "shipping_method": "local",
+      }),
     });
 
     const { client_secret: clientSecret } = await res.json();
