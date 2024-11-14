@@ -7,7 +7,7 @@ from sqlalchemy.orm import joinedload
 from api.v1.orders.models import OrderCreate
 from common.utils import calculate_price
 from db.db import Session
-from db.models import Order, CartItem, Item
+from db.models import Order, CartItem, Item, ItemOption
 
 orders_blueprint = Blueprint("orders", __name__, url_prefix="/order")
 
@@ -18,7 +18,10 @@ def create_order():
 
     with Session() as session:
         cart_items = (
-            session.query(CartItem).options(joinedload(CartItem.product)).where(CartItem.user_id == data.user_id).all()
+            session.query(CartItem)
+            .options(joinedload(CartItem.product), joinedload(CartItem.options))
+            .where(CartItem.user_id == data.user_id)
+            .all()
         )
 
         prices = [calculate_price(cart_item) for cart_item in cart_items]
@@ -45,6 +48,14 @@ def create_order():
                 name=cart_item.product.name,
                 quantity=cart_item.quantity,
                 price=price,
+                item_options=[
+                    ItemOption(
+                        option_id=option.option_id,
+                        name=option.option_group.title,
+                        value=option.name,
+                    )
+                    for option in cart_item.options
+                ],
             )
             for cart_item, price in zip(cart_items, prices)
         ]
