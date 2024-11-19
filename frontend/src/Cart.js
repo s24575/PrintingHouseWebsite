@@ -10,8 +10,6 @@ function Cart() {
     return <p>Your cart is empty.</p>;
   }
 
-  console.log(cart.items);
-
   return (
     <div className="cart">
       <h1>Your Cart</h1>

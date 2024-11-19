@@ -16,13 +16,34 @@ function ProductDetails() {
           `http://localhost:5000/products/${productId}`
         );
         const data = await response.json();
-        setProduct(data);
 
         const defaultOptions = {};
+        const filteredGroups = {};
+
         Object.values(data.all_options).forEach((optionGroup) => {
-          defaultOptions[optionGroup.option_group.option_group_id] =
-            optionGroup.default || 1;
+          if (optionGroup.option_group.type === "select") {
+            if (optionGroup.options && optionGroup.options.length > 0) {
+              defaultOptions[optionGroup.option_group.option_group_id] =
+                optionGroup.options[0].option_id;
+
+              filteredGroups[optionGroup.option_group.option_group_id] =
+                optionGroup;
+            } else {
+              console.warn(
+                `Option group '${optionGroup.option_group.title}' has no options and will not be displayed.`
+              );
+            }
+          } else if (optionGroup.option_group.type === "number") {
+            const defaultValue = optionGroup.default || 1;
+            defaultOptions[optionGroup.option_group.option_group_id] =
+              defaultValue;
+
+            filteredGroups[optionGroup.option_group.option_group_id] =
+              optionGroup;
+          }
         });
+
+        setProduct({ ...data, all_options: filteredGroups });
         setSelectedOptions(defaultOptions);
       } catch (error) {
         console.error("Error fetching product details:", error);

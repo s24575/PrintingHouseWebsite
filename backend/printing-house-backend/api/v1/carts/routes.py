@@ -1,13 +1,13 @@
 from flask import Blueprint, request, jsonify
 from api.v1.carts.models import (
     GetCartItemsResponse,
-    GetCartItemsData,
-    AddCartItemData,
+    CartItemData,
+    AddCartItemRequest,
     DeleteCartItemData,
 )
 from common.utils import calculate_price
 from db.db import Session
-from db.models import CartItem, Option
+from db.models import CartItem, Option, OptionGroup
 
 carts_blueprint = Blueprint("carts_endpoints", __name__, url_prefix="/cart")
 
@@ -19,41 +19,51 @@ def get_cart():
     with Session() as session:
         cart_items = session.query(CartItem).where(CartItem.user_id == user_id).all()
 
-        total = 0
-        cart_items_data = []
-        for cart_item in cart_items:
-            price = calculate_price(cart_item)
-            total += price
-
-            cart_items_data.append(
-                GetCartItemsData(
-                    cart_item_id=cart_item.cart_item_id,
-                    product_id=cart_item.product_id,
-                    name=cart_item.product.name,
-                    price=price,
-                    quantity=cart_item.quantity,
-                )
+        cart_items_data = [
+            CartItemData(
+                cart_item_id=cart_item.cart_item_id,
+                product_id=cart_item.product_id,
+                name=cart_item.product.name,
+                price=calculate_price(cart_item),
+                quantity=cart_item.quantity,
             )
+            for cart_item in cart_items
+        ]
 
-        return GetCartItemsResponse(
-            items=cart_items_data,
-            total=total,
-        ).model_dump_json()
+    total = sum([cart_item_data.price for cart_item_data in cart_items_data])
+
+    return GetCartItemsResponse(
+        items=cart_items_data,
+        total=total,
+    ).model_dump_json()
 
 
 @carts_blueprint.route("/add", methods=["POST"])
 def add_to_cart():
-    data = AddCartItemData.model_validate(request.json)
+    data = AddCartItemRequest.model_validate(request.json)
     user_id = 1
 
     with Session() as session:
+        option_groups = session.query(OptionGroup).where(OptionGroup.product_id == data.product_id).all()
+
+        quantity = 1
+        option_ids = []
+        for option_group in option_groups:
+            if option_group.type == "select":
+                if (option_id := data.selected_options.get(option_group.option_group_id)) is not None:
+                    option_ids.append(option_id)
+            elif option_group.type == "number":
+                if (value := data.selected_options.get(option_group.option_group_id)) is not None:
+                    if option_group.name == "ilosc":
+                        quantity = value
+
         cart_item = CartItem(
             user_id=user_id,
             product_id=data.product_id,
-            quantity=data.quantity,
+            quantity=quantity or 1,
         )
 
-        cart_item.options = session.query(Option).where(Option.option_id.in_(data.selected_options)).all()
+        cart_item.options = session.query(Option).where(Option.option_id.in_(option_ids)).all()
 
         session.add(cart_item)
         session.commit()

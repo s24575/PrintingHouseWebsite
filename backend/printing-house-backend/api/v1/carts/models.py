@@ -3,7 +3,7 @@ from typing import Any
 from pydantic import BaseModel
 
 
-class GetCartItemsData(BaseModel):
+class CartItemData(BaseModel):
     cart_item_id: int
     product_id: int
     name: str
@@ -11,10 +11,9 @@ class GetCartItemsData(BaseModel):
     quantity: int
 
 
-class AddCartItemData(BaseModel):
+class AddCartItemRequest(BaseModel):
     product_id: int
     name: str
-    quantity: int
     selected_options: dict[int, int]
 
 
@@ -23,9 +22,9 @@ class DeleteCartItemData(BaseModel):
 
 
 class CartItemsRequest(BaseModel):
-    cart: AddCartItemData
+    cart: AddCartItemRequest
 
 
 class GetCartItemsResponse(BaseModel):
-    items: list[GetCartItemsData]
+    items: list[CartItemData]
     total: float

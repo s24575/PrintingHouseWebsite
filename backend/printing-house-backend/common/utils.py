@@ -41,6 +41,6 @@ class OptionGroupType(StrEnum):
 
 
 def calculate_price(cart_item: Type[CartItem]) -> Decimal:
-    return cart_item.quantity * (
+    return Decimal(cart_item.quantity) * (
         sum([option.price_increment for option in cart_item.options]) + cart_item.product.base_price
     )
