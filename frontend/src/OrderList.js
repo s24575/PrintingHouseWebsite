@@ -13,6 +13,9 @@ function OrderList() {
             Authorization: `Bearer ${token}`,
           },
         });
+        if (!response.ok) {
+          throw new Error("Failed to fetch orders");
+        }
         const data = await response.json();
         setOrders(data.orders);
       } catch (error) {
@@ -26,24 +29,32 @@ function OrderList() {
   return (
     <div className="order-list">
       <h1>Your Orders</h1>
-      <ul>
-        {orders.map((order) => (
-          <li key={order.id}>
-            <p>
-              <strong>Name:</strong> {order.customer_name}
-            </p>
-            <p>
-              <strong>Product:</strong> {order.product_name}
-            </p>
-            <p>
-              <strong>Quantity:</strong> {order.quantity}
-            </p>
-            <p>
-              <strong>Status:</strong> {order.status}
-            </p>
-          </li>
-        ))}
-      </ul>
+      {orders.length === 0 ? (
+        <p>No orders found.</p>
+      ) : (
+        <table className="clean-table">
+          <thead>
+            <tr>
+              <th>Order ID</th>
+              <th>Status</th>
+              <th>Total Price</th>
+              <th>Shipping Method</th>
+              <th>Created At</th>
+            </tr>
+          </thead>
+          <tbody>
+            {orders.map((order) => (
+              <tr key={order.order_id}>
+                <td>{order.order_id}</td>
+                <td>{order.status}</td>
+                <td>${order.total_price.toFixed(2)}</td>
+                <td>{order.shipping_method}</td>
+                <td>{new Date(order.created_at).toLocaleString()}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
     </div>
   );
 }

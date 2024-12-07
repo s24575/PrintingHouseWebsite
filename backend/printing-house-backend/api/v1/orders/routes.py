@@ -2,14 +2,65 @@ import datetime
 
 import stripe
 from flask import Blueprint, request, jsonify
+from pydantic import BaseModel
+from sqlalchemy import sql
 from sqlalchemy.orm import joinedload
 
 from api.v1.orders.models import OrderCreate
 from common.utils import calculate_price
 from db.db import Session
-from db.models import Order, CartItem, Item, ItemOption
+from db.models import Order, CartItem, Item, ItemOption, User, OrderStatus
 
 orders_blueprint = Blueprint("orders", __name__, url_prefix="/order")
+
+
+class ItemBasicInfo(BaseModel):
+    name: str
+    quantity: int
+
+
+class OrderBasicInfo(BaseModel):
+    order_id: int
+    status: str
+    total_price: float
+    shipping_method: str
+    created_at: datetime.datetime
+    items: list[ItemBasicInfo]
+
+
+class OrdersResponse(BaseModel):
+    orders: list[OrderBasicInfo]
+
+
+@orders_blueprint.route("", methods=["GET"])
+def get_orders():
+    user_id = 1
+    with Session() as session:
+        orders = (
+            session.query(Order)
+            .options(joinedload(Order.items))
+            .filter(sql.and_(Order.user_id == user_id, Order.status != OrderStatus.completed))
+        ).all()
+
+    return OrdersResponse(
+        orders=[
+            OrderBasicInfo(
+                order_id=order.order_id,
+                status=order.status,
+                total_price=float(order.total_price),
+                shipping_method=order.shipping_method,
+                created_at=order.created_at,
+                items=[
+                    ItemBasicInfo(
+                        name=item.name,
+                        quantity=item.quantity,
+                    )
+                    for item in order.items
+                ],
+            )
+            for order in orders
+        ]
+    ).model_dump_json()
 
 
 @orders_blueprint.route("", methods=["POST"])
@@ -42,7 +93,7 @@ def create_order():
             shipping_date=datetime.date.today(),
         )
 
-        items = [
+        order.items = [
             Item(
                 product_id=cart_item.product_id,
                 name=cart_item.product.name,
@@ -59,8 +110,6 @@ def create_order():
             )
             for cart_item, price in zip(cart_items, prices)
         ]
-
-        order.items = items
 
         for cart_item in cart_items:
             session.delete(cart_item)

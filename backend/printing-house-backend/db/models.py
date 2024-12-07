@@ -1,3 +1,5 @@
+import enum
+
 from sqlalchemy import Enum, DECIMAL, Date, TIMESTAMP, Table, String, Integer, Boolean, Text, ForeignKey, func, Column
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
@@ -153,14 +155,27 @@ class Option(Base):
     option_group: Mapped["OptionGroup"] = relationship(back_populates="options")
 
 
+class OrderStatus(enum.Enum):
+    created = "created"
+    in_progress = "in_progress"
+    completed = "completed"
+    canceled = "canceled"
+
+
+class ShippingMethod(enum.Enum):
+    self_pickup = "self_pickup"
+    inpost = "inpost"
+    dhl = "dhl"
+
+
 class Order(Base):
     __tablename__ = "orders"
     order_id: Mapped[int] = mapped_column(Integer, primary_key=True)
     user_id: Mapped[int] = mapped_column(ForeignKey("users.user_id"))
     delivery_address_id: Mapped[int | None] = mapped_column(ForeignKey("addresses.address_id"))
     total_price: Mapped[float] = mapped_column(DECIMAL(10, 2))
-    status: Mapped[Enum] = mapped_column(Enum("new", "in_progress", "completed", "canceled"), default="new")
-    shipping_method: Mapped[Enum] = mapped_column(Enum("local", "inpost", "dhl"))
+    status: Mapped[Enum] = mapped_column(Enum(OrderStatus), default=OrderStatus.created)
+    shipping_method: Mapped[Enum] = mapped_column(Enum(ShippingMethod))
     shipping_date: Mapped[str] = mapped_column(Date)
     created_at: Mapped[str] = mapped_column(TIMESTAMP, default=func.current_timestamp())
     modified_at: Mapped[str] = mapped_column(
