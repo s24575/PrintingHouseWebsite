@@ -29,19 +29,21 @@ const CheckoutForm = () => {
       return;
     }
 
+    const token = localStorage.getItem("token");
     const res = await fetch("http://localhost:5000/order", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({
-        "user_id": 1,
         "delivery_address_id": null,
-        "shipping_method": "local",
+        "shipping_method": "self_pickup",
       }),
     });
 
     const { client_secret: clientSecret } = await res.json();
+    if (clientSecret == null) return;
 
     const { error } = await stripe.confirmPayment({
       elements,

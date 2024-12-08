@@ -1,4 +1,6 @@
 from flask import Blueprint, request, jsonify
+from flask_jwt_extended import jwt_required, get_jwt_identity
+
 from api.v1.carts.models import (
     GetCartItemsResponse,
     CartItemData,
@@ -13,11 +15,12 @@ carts_blueprint = Blueprint("carts_endpoints", __name__, url_prefix="/cart")
 
 
 @carts_blueprint.route("/get", methods=["GET"])
+@jwt_required()
 def get_cart():
-    user_id = 1
+    user_id = get_jwt_identity()
 
     with Session() as session:
-        cart_items = session.query(CartItem).where(CartItem.user_id == user_id).all()
+        cart_items = session.query(CartItem).filter_by(user_id=user_id).all()
 
         cart_items_data = [
             CartItemData(
@@ -39,9 +42,11 @@ def get_cart():
 
 
 @carts_blueprint.route("/add", methods=["POST"])
+@jwt_required()
 def add_to_cart():
+    user_id = get_jwt_identity()
+
     data = AddCartItemRequest.model_validate(request.json)
-    user_id = 1
 
     with Session() as session:
         option_groups = session.query(OptionGroup).where(OptionGroup.product_id == data.product_id).all()

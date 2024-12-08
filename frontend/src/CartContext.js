@@ -7,7 +7,14 @@ export function CartProvider({ children }) {
 
   const fetchCart = async () => {
     try {
-      const response = await fetch("http://localhost:5000/cart/get");
+      const token = localStorage.getItem("token");
+      const response = await fetch("http://localhost:5000/cart/get", {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
       if (!response.ok) {
         throw new Error("Failed to fetch cart");
       }
@@ -18,15 +25,15 @@ export function CartProvider({ children }) {
     }
   };
 
-  useEffect(() => {
-    fetchCart();
-  }, []);
-
   const addToCart = async (product, selectedOptions) => {
     try {
+      const token = localStorage.getItem("token");
       const response = await fetch("http://localhost:5000/cart/add", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
         body: JSON.stringify({
           product_id: product.product.product_id,
           name: product.product.name,
@@ -45,10 +52,14 @@ export function CartProvider({ children }) {
 
   const removeFromCart = async (cartItemId) => {
     try {
+      const token = localStorage.getItem("token");
       const response = await fetch(`http://localhost:5000/cart/remove`, {
         method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ "cart_item_id": cartItemId }),
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ cart_item_id: cartItemId }),
       });
 
       if (!response.ok) {
@@ -60,6 +71,10 @@ export function CartProvider({ children }) {
       console.error("Error removing from cart:", error);
     }
   };
+
+  useEffect(() => {
+    fetchCart();
+  }, []);
 
   return (
     <CartContext.Provider value={{ cart, addToCart, removeFromCart }}>

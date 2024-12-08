@@ -1,6 +1,7 @@
 import React, { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import { CartContext } from "./CartContext";
+import { AuthContext } from "./AuthContext";
 import "./Navbar.css";
 import { CgProfile } from "react-icons/cg";
 import { FaShoppingCart } from "react-icons/fa";
@@ -8,10 +9,16 @@ import { IconContext } from "react-icons";
 
 function Navbar() {
   const { cart } = useContext(CartContext);
+  const { isAuthenticated, logout } = useContext(AuthContext);
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
 
   const toggleProfileMenu = () => {
     setIsProfileMenuOpen(!isProfileMenuOpen);
+  };
+
+  const handleLogout = () => {
+    logout();
+    alert("You have been logged out.");
   };
 
   return (
@@ -39,18 +46,25 @@ function Navbar() {
             className="navbar-item profile-container"
             onClick={toggleProfileMenu}
           >
-            <CgProfile size="30px " />
+            <CgProfile size="30px" />
             {isProfileMenuOpen && (
               <ul className="profile-menu">
-                <li className="profile-item">
-                  <Link to="/register">Register</Link>
-                </li>
-                <li className="profile-item">
-                  <Link to="/login">Login</Link>
-                </li>
-                <li className="profile-item">
-                  <Link to="/logout">Logout</Link>
-                </li>
+                {!isAuthenticated ? (
+                  <>
+                    <li className="profile-item">
+                      <Link to="/register">Register</Link>
+                    </li>
+                    <li className="profile-item">
+                      <Link to="/login">Login</Link>
+                    </li>
+                  </>
+                ) : (
+                  <li className="profile-item">
+                    <button onClick={handleLogout} className="logout-button">
+                      Logout
+                    </button>
+                  </li>
+                )}
               </ul>
             )}
           </li>

@@ -1,70 +1,69 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from "./AuthContext";
+import "./AuthPage.css";
 
-function Login() {
-  const [user, setUser] = useState({ username: "", password: "" });
-  const [message, setMessage] = useState("");
+const LoginPage = () => {
+  const { login } = useContext(AuthContext);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const navigate = useNavigate();
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setUser((prevUser) => ({ ...prevUser, [name]: value }));
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError("");
     try {
-      const response = await fetch("http://localhost:5000/login", {
+      const response = await fetch("http://localhost:5000/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(user),
+        body: JSON.stringify({ email, password }),
       });
-      const data = await response.json();
-      if (data.success) {
-        localStorage.setItem("token", data.token);
-        navigate.push("/order");
+      if (response.ok) {
+        const data = await response.json();
+        login(data.access_token);
+        navigate("/products");
       } else {
-        setMessage(data.message);
+        const errorData = await response.json();
+        setError(errorData.message || "Login failed");
       }
-    } catch (error) {
-      console.error("Error:", error);
-      setMessage("Login failed!");
+    } catch (err) {
+      setError("An error occurred. Please try again.");
     }
   };
 
   return (
-    <div>
-      <h1>Login</h1>
+    <div className="auth-form">
       <form onSubmit={handleSubmit}>
-        <label>
-          Username:
+        <h2>Login</h2>
+        <div className="auth-form-group">
+          <label htmlFor="email">Email</label>
           <input
             type="text"
-            name="username"
-            value={user.username}
-            onChange={handleChange}
+            id="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             required
           />
-        </label>
-        <br />
-        <label>
-          Password:
+        </div>
+        <div className="auth-form-group">
+          <label htmlFor="password">Password</label>
           <input
             type="password"
-            name="password"
-            value={user.password}
-            onChange={handleChange}
+            id="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
             required
           />
-        </label>
-        <br />
-        <button type="submit">Login</button>
+        </div>
+        {error && <p className="auth-error">{error}</p>}
+        <button className="auth-submit" type="submit">
+          Login
+        </button>
       </form>
-      {message && <p>{message}</p>}
     </div>
   );
-}
+};
 
-export default Login;
+export default LoginPage;

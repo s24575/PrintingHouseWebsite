@@ -7,6 +7,7 @@ import OrderList from "./OrderList";
 import Products from "./Products";
 import ProductDetails from "./ProductDetails";
 import { CartProvider } from "./CartContext";
+import { AuthProvider } from "./AuthContext";
 import Cart from "./Cart";
 import Order from "./Order";
 import Payment from "./Payment";
@@ -14,20 +15,22 @@ import Payment from "./Payment";
 function App() {
   return (
     <div>
-      <CartProvider>
-        <Navbar />
-        <Routes>
-          <Route path="/" element={<Navigate to="/products" replace />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/orders" element={<OrderList />} />
-          <Route path="/products" element={<Products />} />
-          <Route path="/products/:productId" element={<ProductDetails />} />
-          <Route path="/cart" element={<Cart />} />
-          <Route path="/order" element={<Order />} />
-          <Route path="/payment" element={<Payment />} />
-        </Routes>
-      </CartProvider>
+      <AuthProvider>
+        <CartProvider>
+          <Navbar />
+          <Routes>
+            <Route path="/" element={<Navigate to="/products" replace />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/orders" element={<OrderList />} />
+            <Route path="/products" element={<Products />} />
+            <Route path="/products/:productId" element={<ProductDetails />} />
+            <Route path="/cart" element={<Cart />} />
+            <Route path="/order" element={<Order />} />
+            <Route path="/payment" element={<Payment />} />
+          </Routes>
+        </CartProvider>
+      </AuthProvider>
     </div>
   );
 }

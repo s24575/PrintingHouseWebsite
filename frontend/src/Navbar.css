@@ -97,14 +97,21 @@
   margin: 0;
 }
 
-.profile-item a {
+.profile-item a,
+.profile-item .logout-button {
   color: white;
   text-decoration: none;
   display: block;
   padding: 10px;
+  font-size: 18px;
+  background: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
   transition: background-color 0.3s;
 }
 
-.profile-item a:hover {
+.profile-item a:hover,
+.profile-item .logout-button:hover {
   background-color: #575757;
 }

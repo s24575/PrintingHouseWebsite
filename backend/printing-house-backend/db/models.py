@@ -44,12 +44,22 @@ class CompanyDetail(Base):
     )
 
 
+class UserRole(enum.Enum):
+    user = "user"
+    worker = "worker"
+    admin = "admin"
+
+
 class User(Base):
     __tablename__ = "users"
     user_id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    username: Mapped[str] = mapped_column(String(255))
+    address_id: Mapped[int] = mapped_column(ForeignKey("addresses.address_id"))
     email: Mapped[str] = mapped_column(String(255))
     password_hash: Mapped[str] = mapped_column(String(255))
+    first_name: Mapped[str] = mapped_column(String(30))
+    last_name: Mapped[str] = mapped_column(String(30))
+    phone_number: Mapped[str] = mapped_column(String(20))
+    role: Mapped[Enum] = mapped_column(Enum(UserRole), default=UserRole.user)
     created_at: Mapped[TIMESTAMP] = mapped_column(TIMESTAMP, default=func.current_timestamp())
     modified_at: Mapped[TIMESTAMP] = mapped_column(
         TIMESTAMP, default=func.current_timestamp(), onupdate=func.current_timestamp()

@@ -2,39 +2,22 @@ import datetime
 
 import stripe
 from flask import Blueprint, request, jsonify
-from pydantic import BaseModel
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from sqlalchemy import sql
 from sqlalchemy.orm import joinedload
 
-from api.v1.orders.models import OrderCreate
+from api.v1.orders.models import OrderCreate, OrdersResponse, OrderBasicInfo, ItemBasicInfo
 from common.utils import calculate_price
 from db.db import Session
-from db.models import Order, CartItem, Item, ItemOption, User, OrderStatus
+from db.models import Order, CartItem, Item, ItemOption, OrderStatus
 
 orders_blueprint = Blueprint("orders", __name__, url_prefix="/order")
 
 
-class ItemBasicInfo(BaseModel):
-    name: str
-    quantity: int
-
-
-class OrderBasicInfo(BaseModel):
-    order_id: int
-    status: str
-    total_price: float
-    shipping_method: str
-    created_at: datetime.datetime
-    items: list[ItemBasicInfo]
-
-
-class OrdersResponse(BaseModel):
-    orders: list[OrderBasicInfo]
-
-
 @orders_blueprint.route("", methods=["GET"])
+@jwt_required()
 def get_orders():
-    user_id = 1
+    user_id = get_jwt_identity()
     with Session() as session:
         orders = (
             session.query(Order)
@@ -64,14 +47,17 @@ def get_orders():
 
 
 @orders_blueprint.route("", methods=["POST"])
+@jwt_required()
 def create_order():
+    user_id = get_jwt_identity()
+
     data: OrderCreate = OrderCreate.model_validate(request.json)
 
     with Session() as session:
         cart_items = (
             session.query(CartItem)
             .options(joinedload(CartItem.product), joinedload(CartItem.options))
-            .where(CartItem.user_id == data.user_id)
+            .where(CartItem.user_id == user_id)
             .all()
         )
 
@@ -86,7 +72,7 @@ def create_order():
         )
 
         order = Order(
-            user_id=data.user_id,
+            user_id=user_id,
             delivery_address_id=data.delivery_address_id,
             shipping_method=data.shipping_method,
             total_price=total_price,
