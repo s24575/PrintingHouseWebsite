@@ -7,12 +7,12 @@ function Cart() {
   const { cart, removeFromCart } = useContext(CartContext);
 
   if (cart.items.length === 0) {
-    return <p>Your cart is empty.</p>;
+    return <p>Twój koszyk jest pusty.</p>;
   }
 
   return (
     <div className="cart">
-      <h1>Your Cart</h1>
+      <h1>Koszyk</h1>
       {cart.items.map((item) => (
         <div key={item.cart_item_id} className="cart-item">
           <h2>{item.name}</h2>

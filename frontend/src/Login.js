@@ -1,5 +1,5 @@
 import React, { useState, useContext } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { AuthContext } from "./AuthContext";
 import "./AuthPage.css";
 
@@ -9,42 +9,49 @@ const LoginPage = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const from = location.state?.from?.pathname || "/products";
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+
     try {
-      const response = await fetch("http://localhost:5000/auth/login", {
+      const response = await fetch("/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ email, password }),
       });
+
       if (response.ok) {
         const data = await response.json();
         login(data.access_token);
-        navigate("/products");
+        navigate(from, { replace: true });
       } else {
         const errorData = await response.json();
-        setError(errorData.message || "Login failed");
+        setError(errorData.message || "Login failed. Please try again.");
       }
     } catch (err) {
-      setError("An error occurred. Please try again.");
+      setError("Network error. Please try again later.");
     }
   };
 
   return (
     <div className="auth-form">
-      <form onSubmit={handleSubmit}>
-        <h2>Login</h2>
+      <form onSubmit={handleSubmit} aria-labelledby="login-heading">
+        <h2 id="login-heading">Login</h2>
         <div className="auth-form-group">
           <label htmlFor="email">Email</label>
           <input
-            type="text"
+            type="email"
             id="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
+            aria-required="true"
           />
         </div>
         <div className="auth-form-group">
@@ -55,9 +62,14 @@ const LoginPage = () => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
+            aria-required="true"
           />
         </div>
-        {error && <p className="auth-error">{error}</p>}
+        {error && (
+          <p className="auth-error" role="alert">
+            {error}
+          </p>
+        )}
         <button className="auth-submit" type="submit">
           Login
         </button>

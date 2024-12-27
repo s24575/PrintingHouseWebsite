@@ -12,6 +12,14 @@ class CreateProductData(BaseModel):
     weight: float
 
 
+class ProcessSelectedOptionsData(BaseModel):
+    selected_options: dict[int, int]
+
+
+class ProcessSelectedOptionsResponse(BaseModel):
+    price: float
+
+
 class MultipleProductsResponse(BaseModel):
     products: list[ProductModel]
 

@@ -27,7 +27,7 @@ def get_cart():
                 cart_item_id=cart_item.cart_item_id,
                 product_id=cart_item.product_id,
                 name=cart_item.product.name,
-                price=calculate_price(cart_item),
+                price=float(calculate_price(cart_item.product.base_price, cart_item.options, cart_item.quantity)),
                 quantity=cart_item.quantity,
             )
             for cart_item in cart_items
@@ -62,13 +62,9 @@ def add_to_cart():
                     if option_group.name == "ilosc":
                         quantity = value
 
-        cart_item = CartItem(
-            user_id=user_id,
-            product_id=data.product_id,
-            quantity=quantity or 1,
-        )
+        options = session.query(Option).where(Option.option_id.in_(option_ids)).all()
 
-        cart_item.options = session.query(Option).where(Option.option_id.in_(option_ids)).all()
+        cart_item = CartItem(user_id=user_id, product_id=data.product_id, quantity=quantity or 1, options=options)
 
         session.add(cart_item)
         session.commit()

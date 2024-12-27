@@ -1,13 +1,7 @@
 from decimal import Decimal
-from enum import StrEnum
-from typing import Any, Type
+from typing import Type
 
-from db.models import Product, Option, OptionGroup, CartItem
-
-
-class OptionGroupType(StrEnum):
-    Select = ("select",)
-    Number = ("number",)
+from db.models import CartItem
 
 
 # def calculate_price(product_id: int, selected_options: dict[int, Any]) -> Decimal:
@@ -40,7 +34,9 @@ class OptionGroupType(StrEnum):
 #     return total_price
 
 
-def calculate_price(cart_item: Type[CartItem]) -> Decimal:
-    return Decimal(cart_item.quantity) * (
-        sum([option.price_increment for option in cart_item.options]) + cart_item.product.base_price
-    )
+def calculate_price_for_cart_item(cart_item: Type[CartItem]) -> Decimal:
+    return calculate_price(cart_item.product.base_price, cart_item.options, cart_item.quantity)
+
+
+def calculate_price(base_price: Decimal, options: list, quantity: int) -> Decimal:
+    return Decimal(quantity) * (sum([option.price_increment for option in options]) + base_price)

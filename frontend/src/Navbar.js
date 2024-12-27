@@ -6,11 +6,13 @@ import "./Navbar.css";
 import { CgProfile } from "react-icons/cg";
 import { FaShoppingCart } from "react-icons/fa";
 import { IconContext } from "react-icons";
+import { useNavigate } from "react-router-dom";
 
 function Navbar() {
   const { cart } = useContext(CartContext);
   const { isAuthenticated, logout } = useContext(AuthContext);
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
+  const navigate = useNavigate();
 
   const toggleProfileMenu = () => {
     setIsProfileMenuOpen(!isProfileMenuOpen);
@@ -18,7 +20,7 @@ function Navbar() {
 
   const handleLogout = () => {
     logout();
-    alert("You have been logged out.");
+    navigate("/");
   };
 
   return (
@@ -28,10 +30,10 @@ function Navbar() {
 
         <ul className="navbar-menu">
           <li className="navbar-item">
-            <Link to="/products">Products</Link>
+            <Link to="/products">Produkty</Link>
           </li>
           <li className="navbar-item">
-            <Link to="/orders">Orders</Link>
+            <Link to="/orders">Zamówienia</Link>
           </li>
           <li className="navbar-item">
             <Link to="/cart" className="cart-link">

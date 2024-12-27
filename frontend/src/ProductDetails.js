@@ -8,6 +8,7 @@ function ProductDetails() {
   const [product, setProduct] = useState(null);
   const { addToCart } = useContext(CartContext);
   const [selectedOptions, setSelectedOptions] = useState({});
+  const [price, setPrice] = useState(null);
 
   useEffect(() => {
     const fetchProductDetails = async () => {
@@ -28,10 +29,6 @@ function ProductDetails() {
 
               filteredGroups[optionGroup.option_group.option_group_id] =
                 optionGroup;
-            } else {
-              console.warn(
-                `Option group '${optionGroup.option_group.title}' has no options and will not be displayed.`
-              );
             }
           } else if (optionGroup.option_group.type === "number") {
             const defaultValue = optionGroup.default || 1;
@@ -45,6 +42,7 @@ function ProductDetails() {
 
         setProduct({ ...data, all_options: filteredGroups });
         setSelectedOptions(defaultOptions);
+        updatePrice(defaultOptions);
       } catch (error) {
         console.error("Error fetching product details:", error);
       }
@@ -53,11 +51,40 @@ function ProductDetails() {
     fetchProductDetails();
   }, [productId]);
 
+  const updatePrice = async (options) => {
+    try {
+      const response = await fetch(`http://localhost:5000/products/${productId}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          selected_options: options,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch price');
+      }
+
+      const data = await response.json();
+      setPrice(data.price);
+    } catch (error) {
+      console.error('Error updating price:', error);
+    }
+  };
+
   const handleOptionChange = (groupId, value) => {
-    setSelectedOptions((prevOptions) => ({
-      ...prevOptions,
-      [groupId]: isNaN(value) ? value : parseInt(value),
-    }));
+    setSelectedOptions((prevOptions) => {
+      const updatedOptions = {
+        ...prevOptions,
+        [groupId]: isNaN(value) ? value : parseInt(value),
+      };
+
+      updatePrice(updatedOptions);
+
+      return updatedOptions;
+    });
   };
 
   if (!product) return null;
@@ -79,7 +106,6 @@ function ProductDetails() {
             className="option-group"
           >
             <h3>{group.option_group.title}</h3>
-
             {group.option_group.type === "select" && (
               <select
                 value={selectedOptions[group.option_group.option_group_id]}
@@ -92,7 +118,7 @@ function ProductDetails() {
               >
                 {group.options.map((option) => (
                   <option key={option.option_id} value={option.option_id}>
-                    {option.name} (+{option.price_increment} PLN)
+                    {option.name}
                   </option>
                 ))}
               </select>
@@ -113,6 +139,10 @@ function ProductDetails() {
             )}
           </div>
         ))}
+      </div>
+
+      <div className="price-summary">
+        <h3>Cena: {price !== null ? `${price} PLN` : 'Obliczanie...'}</h3>
       </div>
 
       <button

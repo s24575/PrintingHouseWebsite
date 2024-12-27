@@ -11,6 +11,7 @@ import { AuthProvider } from "./AuthContext";
 import Cart from "./Cart";
 import Order from "./Order";
 import Payment from "./Payment";
+import ProtectedRoute from "./ProtectedRoute";
 
 function App() {
   return (
@@ -25,7 +26,14 @@ function App() {
             <Route path="/orders" element={<OrderList />} />
             <Route path="/products" element={<Products />} />
             <Route path="/products/:productId" element={<ProductDetails />} />
-            <Route path="/cart" element={<Cart />} />
+            <Route
+              path="/cart"
+              element={
+                <ProtectedRoute>
+                  <Cart />
+                </ProtectedRoute>
+              }
+            />
             <Route path="/order" element={<Order />} />
             <Route path="/payment" element={<Payment />} />
           </Routes>

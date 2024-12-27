@@ -61,7 +61,10 @@ def create_order():
             .all()
         )
 
-        prices = [calculate_price(cart_item) for cart_item in cart_items]
+        prices = [
+            calculate_price(cart_item.product.base_price, cart_item.options, cart_item.quantity)
+            for cart_item in cart_items
+        ]
         total_price = sum(prices)
 
         payment_intent = stripe.PaymentIntent.create(

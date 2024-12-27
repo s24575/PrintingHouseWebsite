@@ -28,33 +28,29 @@ function OrderList() {
 
   return (
     <div className="order-list">
-      <h1>Your Orders</h1>
-      {orders.length === 0 ? (
-        <p>No orders found.</p>
-      ) : (
-        <table className="clean-table">
-          <thead>
-            <tr>
-              <th>Order ID</th>
-              <th>Status</th>
-              <th>Total Price</th>
-              <th>Shipping Method</th>
-              <th>Created At</th>
+      <h1>Moje zamówienia</h1>
+      <table className="clean-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Status</th>
+            <th>Koszt</th>
+            <th>Dostawa</th>
+            <th>Data zamówienia</th>
+          </tr>
+        </thead>
+        <tbody>
+          {orders.map((order) => (
+            <tr key={order.order_id}>
+              <td>{order.order_id}</td>
+              <td>{order.status}</td>
+              <td>${order.total_price.toFixed(2)}</td>
+              <td>{order.shipping_method}</td>
+              <td>{new Date(order.created_at).toLocaleString()}</td>
             </tr>
-          </thead>
-          <tbody>
-            {orders.map((order) => (
-              <tr key={order.order_id}>
-                <td>{order.order_id}</td>
-                <td>{order.status}</td>
-                <td>${order.total_price.toFixed(2)}</td>
-                <td>{order.shipping_method}</td>
-                <td>{new Date(order.created_at).toLocaleString()}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }
