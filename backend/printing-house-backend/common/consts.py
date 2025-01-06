@@ -7,3 +7,6 @@ class OptionGroupType(StrEnum):
 
 
 QUANTITY_OPTION_GROUP_NAME = "ilosc"
+
+UPLOAD_FOLDER = "uploads/"
+ALLOWED_EXTENSIONS = {"pdf", "jpg", "jpeg", "png", "docx"}

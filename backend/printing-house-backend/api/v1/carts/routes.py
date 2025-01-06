@@ -10,6 +10,7 @@ from api.v1.carts.models import (
 from common.utils import calculate_price
 from db.db import Session
 from db.models import CartItem, Option, OptionGroup
+from services.file_service import handle_uploaded_files
 
 carts_blueprint = Blueprint("carts_endpoints", __name__, url_prefix="/cart")
 
@@ -46,7 +47,9 @@ def get_cart():
 def add_to_cart():
     user_id = get_jwt_identity()
 
-    data = AddCartItemRequest.model_validate(request.json)
+    data = AddCartItemRequest.model_validate_json(request.form.get("data"))
+    x = request.form
+    files = request.files.getlist("files")
 
     with Session() as session:
         option_groups = session.query(OptionGroup).where(OptionGroup.product_id == data.product_id).all()
@@ -64,20 +67,34 @@ def add_to_cart():
 
         options = session.query(Option).where(Option.option_id.in_(option_ids)).all()
 
-        cart_item = CartItem(user_id=user_id, product_id=data.product_id, quantity=quantity or 1, options=options)
-
+        cart_item = CartItem(user_id=user_id, product_id=data.product_id, quantity=quantity, options=options)
         session.add(cart_item)
+        session.flush()
+
+        if files:
+            uploaded_files = handle_uploaded_files(files, user_id)
+            for file in uploaded_files:
+                file.cart_item_id = cart_item.cart_item_id
+            session.add_all(uploaded_files)
+
         session.commit()
 
         return jsonify(cart_item.to_dict()), 201
 
 
 @carts_blueprint.route("/remove", methods=["DELETE"])
+@jwt_required()
 def remove_from_cart():
+    user_id = get_jwt_identity()
+
     data = DeleteCartItemData.model_validate(request.json)
 
     with Session() as session:
         cart_item = session.get(CartItem, data.cart_item_id)
+
+        if str(cart_item.user_id) != user_id:
+            return jsonify({"error": "Invalid permissions"}), 403
+
         if not cart_item:
             return jsonify({"error": "Item not found"}), 404
 

@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import { CartContext } from "./CartContext";
 import "./ProductDetails.css";
@@ -9,6 +10,8 @@ function ProductDetails() {
   const { addToCart } = useContext(CartContext);
   const [selectedOptions, setSelectedOptions] = useState({});
   const [price, setPrice] = useState(null);
+  const [files, setFiles] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchProductDetails = async () => {
@@ -53,24 +56,27 @@ function ProductDetails() {
 
   const updatePrice = async (options) => {
     try {
-      const response = await fetch(`http://localhost:5000/products/${productId}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          selected_options: options,
-        }),
-      });
+      const response = await fetch(
+        `http://localhost:5000/products/${productId}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            selected_options: options,
+          }),
+        }
+      );
 
       if (!response.ok) {
-        throw new Error('Failed to fetch price');
+        throw new Error("Failed to fetch price");
       }
 
       const data = await response.json();
       setPrice(data.price);
     } catch (error) {
-      console.error('Error updating price:', error);
+      console.error("Error updating price:", error);
     }
   };
 
@@ -85,6 +91,24 @@ function ProductDetails() {
 
       return updatedOptions;
     });
+  };
+
+  const handleFileChange = (e) => {
+    const selectedFiles = Array.from(e.target.files);
+    setFiles((prevFiles) => [...prevFiles, ...selectedFiles]);
+  };
+
+  const handleRemoveFile = (index) => {
+    setFiles((prevFiles) => prevFiles.filter((_, i) => i !== index));
+  };
+
+  const handleSubmit = async () => {
+    try {
+      await addToCart(product, selectedOptions, files);
+      navigate("/cart");
+    } catch (error) {
+      console.error("Error submitting cart:", error);
+    }
   };
 
   if (!product) return null;
@@ -142,13 +166,26 @@ function ProductDetails() {
       </div>
 
       <div className="price-summary">
-        <h3>Cena: {price !== null ? `${price} PLN` : 'Obliczanie...'}</h3>
+        <h3>Cena: {price !== null ? `${price} PLN` : "Obliczanie..."}</h3>
       </div>
 
-      <button
-        className="order-button"
-        onClick={() => addToCart(product, selectedOptions)}
-      >
+      <div>
+        <h3>Upload Files:</h3>
+        <input
+          type="file"
+          onChange={handleFileChange}
+          accept=".pdf,image/*"
+          multiple
+        />
+        {files.map((file, index) => (
+          <div key={index}>
+            {file.name}
+            <button onClick={() => handleRemoveFile(index)}>Remove</button>
+          </div>
+        ))}
+      </div>
+
+      <button className="order-button" onClick={handleSubmit}>
         Dodaj do koszyka
       </button>
     </div>

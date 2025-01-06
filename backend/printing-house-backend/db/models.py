@@ -1,6 +1,20 @@
 import enum
 
-from sqlalchemy import Enum, DECIMAL, Date, TIMESTAMP, Table, String, Integer, Boolean, Text, ForeignKey, func, Column
+from sqlalchemy import (
+    Enum,
+    DECIMAL,
+    Date,
+    TIMESTAMP,
+    Table,
+    String,
+    Integer,
+    Boolean,
+    Text,
+    ForeignKey,
+    func,
+    Column,
+    LargeBinary,
+)
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
 
@@ -101,6 +115,15 @@ class Invoice(Base):
     modified_at: Mapped[str] = mapped_column(
         TIMESTAMP, default=func.current_timestamp(), onupdate=func.current_timestamp()
     )
+
+
+class File(Base):
+    __tablename__ = "files"
+    file_id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    cart_item_id: Mapped[int] = mapped_column(ForeignKey("cart_items.cart_item_id"))
+    item_id: Mapped[int] = mapped_column(ForeignKey("items.item_id"))
+    filename: Mapped[str] = mapped_column(String(255))
+    file_data: Mapped[str] = mapped_column(LargeBinary(length=(2**32) - 1))
 
 
 class ItemOption(Base):

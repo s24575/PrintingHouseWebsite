@@ -25,29 +25,31 @@ export function CartProvider({ children }) {
     }
   };
 
-  const addToCart = async (product, selectedOptions) => {
-    try {
-      const token = localStorage.getItem("token");
-      const response = await fetch("http://localhost:5000/cart/add", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          product_id: product.product.product_id,
-          name: product.product.name,
-          selected_options: selectedOptions,
-        }),
-      });
+  const addToCart = async (product, selectedOptions, files = []) => {
+    const token = localStorage.getItem("token");
+    const formData = new FormData();
+    formData.append(
+      "data",
+      JSON.stringify({
+        product_id: product.product.product_id,
+        name: product.product.name,
+        selected_options: selectedOptions,
+      })
+    );
 
-      if (!response.ok) {
-        throw new Error("Failed to add to cart");
-      }
-      fetchCart();
-    } catch (error) {
-      console.error("Error adding to cart:", error);
-    }
+    files.forEach((file) => {
+      formData.append("files", file);
+    });
+
+    fetch("http://localhost:5000/cart/add", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      body: formData,
+    }).catch(console.error("Failed to add to cart"));
+
+    fetchCart();
   };
 
   const removeFromCart = async (cartItemId) => {
