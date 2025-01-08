@@ -26,6 +26,19 @@ function OrderList() {
     fetchOrders();
   }, []);
 
+  const statusLabels = {
+    created: "Utworzone",
+    in_progress: "W trakcie realizacji",
+    completed: "Zakończone",
+    canceled: "Anulowane",
+  };
+
+  const deliveryLabels = {
+    self_pickup: "Odbiór osobisty",
+    inpost: "InPost",
+    dhl: "DHL",
+  };
+
   return (
     <div className="order-list">
       <h1>Moje zamówienia</h1>
@@ -43,10 +56,21 @@ function OrderList() {
           {orders.map((order) => (
             <tr key={order.order_id}>
               <td>{order.order_id}</td>
-              <td>{order.status}</td>
-              <td>${order.total_price.toFixed(2)}</td>
-              <td>{order.shipping_method}</td>
-              <td>{new Date(order.created_at).toLocaleString()}</td>
+              <td>{statusLabels[order.status] || "Nieznany status"}</td>
+              <td>{order.total_price.toFixed(2)} zł</td>
+              <td>
+                {deliveryLabels[order.shipping_method] || "Nieznana metoda"}
+              </td>
+              <td>
+                {new Date(order.created_at).toLocaleString("pl-PL", {
+                  day: "2-digit",
+                  month: "2-digit",
+                  year: "numeric",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  second: "2-digit",
+                })}
+              </td>
             </tr>
           ))}
         </tbody>

@@ -20,7 +20,7 @@ function Order() {
 
   return (
     <div className="order">
-      <h1>Delivery Information</h1>
+      <h1>Szczegóły dostawy</h1>
 
       <div className="form-group">
         <label>Email:</label>
@@ -33,7 +33,7 @@ function Order() {
       </div>
 
       <div className="form-group">
-        <label>Choose a delivery option:</label>
+        <label>Wybierz rodzaj dostawy:</label>
         <div className="delivery-options">
           <div
             className={`delivery-card ${
@@ -50,8 +50,8 @@ function Order() {
               onChange={() => setDeliveryOption("local")}
               className="hidden-radio"
             />
-            <label htmlFor="local">Local Pickup</label>
-            <p>You will pick up the order yourself.</p>
+            <label htmlFor="local">Odbiór własny</label>
+            <p>C.H. Metropolia, Jana Kilińskiego 4, Poziom 0, 80-452 Gdańsk</p>
           </div>
 
           <div
@@ -70,7 +70,7 @@ function Order() {
               className="hidden-radio"
             />
             <label htmlFor="inpost">InPost</label>
-            <p>Pickup from your chosen InPost locker.</p>
+            <p>Wybierz paczkomat w Twojej okolicy.</p>
           </div>
 
           <div
@@ -89,7 +89,7 @@ function Order() {
               className="hidden-radio"
             />
             <label htmlFor="dhl">DHL</label>
-            <p>Fast delivery to your address via DHL courier.</p>
+            <p>Szybka dostawa przez kuriera DHL.</p>
           </div>
         </div>
       </div>
@@ -97,7 +97,7 @@ function Order() {
       {(deliveryOption === "inpost" || deliveryOption === "dhl") && (
         <>
           <div className="form-group">
-            <label>City:</label>
+            <label>Miasto:</label>
             <input
               type="text"
               value={city}
@@ -106,7 +106,7 @@ function Order() {
             />
           </div>
           <div className="form-group">
-            <label>Street:</label>
+            <label>Ulica:</label>
             <input
               type="text"
               value={street}
@@ -115,7 +115,7 @@ function Order() {
             />
           </div>
           <div className="form-group">
-            <label>House Number:</label>
+            <label>Numer mieszkania:</label>
             <input
               type="text"
               value={houseNumber}
@@ -124,7 +124,7 @@ function Order() {
             />
           </div>
           <div className="form-group">
-            <label>Postal Code:</label>
+            <label>Kod pocztowy:</label>
             <input
               type="text"
               value={postalCode}
@@ -136,7 +136,7 @@ function Order() {
       )}
 
       <div className="price-summary">
-        <h2>Order Summary</h2>
+        <h2>Szczegóły zamówienia</h2>
         {cart.items.map((item, index) => (
           <div key={`${item.id}-${index}`} className="summary-item">
             <p>{item.name}</p>
@@ -144,11 +144,11 @@ function Order() {
           </div>
         ))}
         <hr />
-        <p className="total-price">Total: {cart.total} PLN</p>
+        <p className="total-price">Cena: {cart.total} zł</p>
       </div>
 
       <button className="submit-order" onClick={handleSubmitOrder}>
-        Place Order
+        Złóż zamówienie
       </button>
     </div>
   );

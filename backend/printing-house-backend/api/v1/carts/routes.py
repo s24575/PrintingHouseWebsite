@@ -72,7 +72,7 @@ def add_to_cart():
         session.flush()
 
         if files:
-            uploaded_files = handle_uploaded_files(files, user_id)
+            uploaded_files = handle_uploaded_files(files)
             for file in uploaded_files:
                 file.cart_item_id = cart_item.cart_item_id
             session.add_all(uploaded_files)

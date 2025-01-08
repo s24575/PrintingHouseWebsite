@@ -16,18 +16,18 @@ function Cart() {
       {cart.items.map((item) => (
         <div key={item.cart_item_id} className="cart-item">
           <h2>{item.name}</h2>
-          <p>{item.price} PLN</p>
+          <p>{item.price} zł</p>
           <button
             className="remove-button"
             onClick={() => removeFromCart(item.cart_item_id)}
           >
-            Remove
+            Usuń
           </button>
         </div>
       ))}
-      <h3>Total: {cart["total"]} PLN</h3>
+      <h3>Cena: {cart["total"]} zł</h3>
       <Link to="/order" className="checkout-button">
-        Proceed to Order
+        Kontynuuj
       </Link>
     </div>
   );

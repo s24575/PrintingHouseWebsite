@@ -78,3 +78,80 @@
 .order-button:hover {
   background-color: #218838;
 }
+
+.file-upload {
+  margin-top: 20px;
+  text-align: left;
+}
+
+.file-upload h3 {
+  font-size: 18px;
+  margin-bottom: 10px;
+  color: #555;
+}
+
+.file-upload-area {
+  display: block;
+  padding: 20px;
+  margin-bottom: 15px;
+  border: 2px dashed #ccc;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  text-align: center;
+  font-size: 16px;
+  color: #777;
+  cursor: pointer;
+  transition: border-color 0.3s, background-color 0.3s;
+}
+
+.file-upload-area:hover {
+  border-color: #007bff;
+  background-color: #f1faff;
+}
+
+.file-upload-area input {
+  display: none;
+}
+
+.file-list {
+  margin-top: 10px;
+  max-height: 200px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  background-color: #fff;
+}
+
+.file-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  border-bottom: 1px solid #eee;
+  font-size: 14px;
+  color: #333;
+}
+
+.file-item:last-child {
+  border-bottom: none;
+}
+
+.file-item span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 80%;
+}
+
+.remove-file-button {
+  background: none;
+  border: none;
+  color: #dc3545;
+  font-size: 16px;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.remove-file-button:hover {
+  color: #c82333;
+}

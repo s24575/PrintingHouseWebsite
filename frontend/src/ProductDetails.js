@@ -165,24 +165,36 @@ function ProductDetails() {
         ))}
       </div>
 
-      <div className="price-summary">
-        <h3>Cena: {price !== null ? `${price} PLN` : "Obliczanie..."}</h3>
+      <div className="file-upload">
+        <h3>Załącz pliki:</h3>
+        <label htmlFor="file-input" className="file-upload-area">
+          Przeciągnij i upuść pliki tutaj lub kliknij, aby wybrać
+          <input
+            id="file-input"
+            type="file"
+            onChange={handleFileChange}
+            accept=".pdf,image/*"
+            multiple
+          />
+        </label>
+        <div className="file-list">
+          {files.map((file, index) => (
+            <div key={index} className="file-item">
+              <span>{file.name}</span>
+              <button
+                type="button"
+                className="remove-file-button"
+                onClick={() => handleRemoveFile(index)}
+              >
+                ✕
+              </button>
+            </div>
+          ))}
+        </div>
       </div>
 
-      <div>
-        <h3>Upload Files:</h3>
-        <input
-          type="file"
-          onChange={handleFileChange}
-          accept=".pdf,image/*"
-          multiple
-        />
-        {files.map((file, index) => (
-          <div key={index}>
-            {file.name}
-            <button onClick={() => handleRemoveFile(index)}>Remove</button>
-          </div>
-        ))}
+      <div className="price-summary">
+        <h3>Cena: {price !== null ? `${price} PLN` : "Obliczanie..."}</h3>
       </div>
 
       <button className="order-button" onClick={handleSubmit}>

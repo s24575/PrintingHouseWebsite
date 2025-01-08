@@ -80,13 +80,6 @@ class User(Base):
     )
 
 
-class Dictionary(Base):
-    __tablename__ = "dictionary"
-    dictionary_id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    key: Mapped[str] = mapped_column(String(255))
-    value: Mapped[str] = mapped_column(String(255))
-
-
 class InvoiceItem(Base):
     __tablename__ = "invoice_items"
     invoice_item_id: Mapped[int] = mapped_column(Integer, primary_key=True)
@@ -145,6 +138,7 @@ class Item(Base):
     price: Mapped[float] = mapped_column(DECIMAL(10, 2))
 
     item_options: Mapped[list["ItemOption"]] = relationship("ItemOption", backref="Item", cascade="all, delete-orphan")
+    files: Mapped[list["File"]] = relationship()
 
 
 cart_item_options = Table(
@@ -164,6 +158,7 @@ class CartItem(Base):
 
     product: Mapped["Product"] = relationship("Product")
     options: Mapped[list["Option"]] = relationship("Option", secondary="cart_item_options")
+    files: Mapped[list["File"]] = relationship()
 
 
 class OptionGroup(Base):

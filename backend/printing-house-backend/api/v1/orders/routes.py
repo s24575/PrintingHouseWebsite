@@ -96,6 +96,7 @@ def create_order():
                     )
                     for option in cart_item.options
                 ],
+                files=cart_item.files,
             )
             for cart_item, price in zip(cart_items, prices)
         ]
