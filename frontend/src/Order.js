@@ -10,12 +10,24 @@ function Order() {
   const navigate = useNavigate();
 
   const [city, setCity] = useState("");
+  const [postalCode, setPostalCode] = useState("");
   const [street, setStreet] = useState("");
   const [houseNumber, setHouseNumber] = useState("");
-  const [postalCode, setPostalCode] = useState("");
+  const [apartmentNumber, setApartmentNumber] = useState("");
 
   const handleSubmitOrder = () => {
-    navigate("/payment");
+    navigate("/payment", {
+      state: {
+        deliveryOption,
+        deliveryDetails: {
+          "city": city,
+          "postal_code": postalCode,
+          "street": street,
+          "house_number": houseNumber,
+          "apartment_number": apartmentNumber,
+        },
+      },
+    });
   };
 
   return (
@@ -106,6 +118,15 @@ function Order() {
             />
           </div>
           <div className="form-group">
+            <label>Kod pocztowy:</label>
+            <input
+              type="text"
+              value={postalCode}
+              onChange={(e) => setPostalCode(e.target.value)}
+              required
+            />
+          </div>
+          <div className="form-group">
             <label>Ulica:</label>
             <input
               type="text"
@@ -124,11 +145,11 @@ function Order() {
             />
           </div>
           <div className="form-group">
-            <label>Kod pocztowy:</label>
+            <label>Numer lokalu:</label>
             <input
               type="text"
-              value={postalCode}
-              onChange={(e) => setPostalCode(e.target.value)}
+              value={apartmentNumber}
+              onChange={(e) => setApartmentNumber(e.target.value)}
               required
             />
           </div>
@@ -140,7 +161,7 @@ function Order() {
         {cart.items.map((item, index) => (
           <div key={`${item.id}-${index}`} className="summary-item">
             <p>{item.name}</p>
-            <p>{item.price} PLN</p>
+            <p>{item.price} zł</p>
           </div>
         ))}
         <hr />

@@ -194,7 +194,7 @@ function ProductDetails() {
       </div>
 
       <div className="price-summary">
-        <h3>Cena: {price !== null ? `${price} PLN` : "Obliczanie..."}</h3>
+        <h3>Cena: {price !== null ? `${price} zł` : "Obliczanie..."}</h3>
       </div>
 
       <button className="order-button" onClick={handleSubmit}>

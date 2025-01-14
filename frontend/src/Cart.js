@@ -1,10 +1,14 @@
-import React, { useContext } from "react";
+import React, { useEffect, useContext } from "react";
 import { Link } from "react-router-dom";
 import { CartContext } from "./CartContext";
 import "./Cart.css";
 
 function Cart() {
-  const { cart, removeFromCart } = useContext(CartContext);
+  const { cart, fetchCart, removeFromCart } = useContext(CartContext);
+
+  useEffect(() => {
+    fetchCart();
+  }, [fetchCart]);
 
   if (cart.items.length === 0) {
     return <p>Twój koszyk jest pusty.</p>;

@@ -6,7 +6,7 @@ import {
 } from "@stripe/react-stripe-js";
 import "./CheckoutForm.css";
 
-const CheckoutForm = () => {
+const CheckoutForm = ({ deliveryOption, deliveryDetails }) => {
   const stripe = useStripe();
   const elements = useElements();
 
@@ -37,8 +37,8 @@ const CheckoutForm = () => {
         Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({
-        "delivery_address_id": null,
-        "shipping_method": "self_pickup",
+        "shipping_method": deliveryOption,
+        "shipping_details": deliveryDetails,
       }),
     });
 

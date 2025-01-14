@@ -1,11 +1,11 @@
-import React, { createContext, useState, useEffect } from "react";
+import React, { createContext, useCallback, useState, useEffect } from "react";
 
 export const CartContext = createContext();
 
 export function CartProvider({ children }) {
   const [cart, setCart] = useState({ items: [], total: 0 });
 
-  const fetchCart = async () => {
+  const fetchCart = useCallback(async () => {
     try {
       const token = localStorage.getItem("token");
       const response = await fetch("http://localhost:5000/cart/get", {
@@ -14,7 +14,6 @@ export function CartProvider({ children }) {
           Authorization: `Bearer ${token}`,
         },
       });
-
       if (!response.ok) {
         throw new Error("Failed to fetch cart");
       }
@@ -23,7 +22,7 @@ export function CartProvider({ children }) {
     } catch (error) {
       console.error("Error fetching cart:", error);
     }
-  };
+  }, []);
 
   const addToCart = async (product, selectedOptions, files = []) => {
     const token = localStorage.getItem("token");
@@ -79,7 +78,9 @@ export function CartProvider({ children }) {
   }, []);
 
   return (
-    <CartContext.Provider value={{ cart, addToCart, removeFromCart }}>
+    <CartContext.Provider
+      value={{ cart, addToCart, fetchCart, removeFromCart }}
+    >
       {children}
     </CartContext.Provider>
   );

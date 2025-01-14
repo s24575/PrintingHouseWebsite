@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Any
 
 from pydantic import BaseModel
 
@@ -6,8 +7,8 @@ from db.models import ShippingMethod
 
 
 class OrderCreate(BaseModel):
-    delivery_address_id: int | None
     shipping_method: ShippingMethod
+    shipping_details: Any
 
 
 class ItemBasicInfo(BaseModel):

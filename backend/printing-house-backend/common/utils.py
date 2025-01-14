@@ -1,7 +1,7 @@
 from decimal import Decimal
-from typing import Type
+from typing import Type, Any
 
-from db.models import CartItem
+from db.models import CartItem, Address, ShippingMethod
 
 
 # def calculate_price(product_id: int, selected_options: dict[int, Any]) -> Decimal:
@@ -40,3 +40,22 @@ def calculate_price_for_cart_item(cart_item: Type[CartItem]) -> Decimal:
 
 def calculate_price(base_price: Decimal, options: list, quantity: int) -> Decimal:
     return Decimal(quantity) * (sum([option.price_increment for option in options]) + base_price)
+
+
+def get_address_for_order(shipping_method: ShippingMethod, shipping_details: Any) -> Address | None:
+    match shipping_method:
+        case ShippingMethod.self_pickup:
+            assert shipping_details is None
+            return None
+        case ShippingMethod.dhl:
+            return Address(
+                country="pl",
+                voivodeship="test",
+                powiat="test",
+                gmina="test",
+                city=shipping_details["city"],
+                postal_code=shipping_details["postal_code"],
+                street=shipping_details["street"],
+                house_number=shipping_details["house_number"],
+                apartment_number=shipping_details["apartment_number"],
+            )

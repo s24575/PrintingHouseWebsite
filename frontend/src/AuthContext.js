@@ -8,8 +8,11 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const checkAuthStatus = async () => {
       try {
+        const token = localStorage.getItem("token");
         const response = await fetch("http://localhost:5000/auth/status", {
-          credentials: "include",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         });
         setIsAuthenticated(response.ok);
       } catch {

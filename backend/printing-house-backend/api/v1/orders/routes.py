@@ -7,9 +7,9 @@ from sqlalchemy import sql
 from sqlalchemy.orm import joinedload
 
 from api.v1.orders.models import OrderCreate, OrdersResponse, OrderBasicInfo, ItemBasicInfo
-from common.utils import calculate_price
+from common.utils import calculate_price, get_address_for_order
 from db.db import Session
-from db.models import Order, CartItem, Item, ItemOption, OrderStatus
+from db.models import Order, CartItem, Item, ItemOption, OrderStatus, Address
 
 orders_blueprint = Blueprint("orders", __name__, url_prefix="/order")
 
@@ -74,9 +74,13 @@ def create_order():
             metadata={"integration_check": "accept_a_payment"},
         )
 
+        address = get_address_for_order(data.shipping_method, data.shipping_details)
+        session.add(address)
+        session.flush()
+
         order = Order(
             user_id=user_id,
-            delivery_address_id=data.delivery_address_id,
+            delivery_address_id=address.address_id,
             shipping_method=data.shipping_method,
             total_price=total_price,
             shipping_date=datetime.date.today(),

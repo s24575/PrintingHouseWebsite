@@ -44,6 +44,7 @@ def login():
 @jwt_required(optional=True)
 def check_auth_status():
     identity = get_jwt_identity()
+    print(identity)
     if identity:
         return jsonify({"message": "User is authenticated"}), 200
     return jsonify({"message": "User is not authenticated"}), 401
