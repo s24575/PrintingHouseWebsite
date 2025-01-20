@@ -7,7 +7,7 @@ from sqlalchemy import sql
 from sqlalchemy.orm import joinedload
 
 from api.v1.orders.models import OrderCreate, OrdersResponse, OrderBasicInfo, ItemBasicInfo
-from common.utils import calculate_price, get_address_for_order
+from common.utils import calculate_price, create_address_for_order
 from db.db import Session
 from db.models import Order, CartItem, Item, ItemOption, OrderStatus, Address
 
@@ -74,16 +74,22 @@ def create_order():
             metadata={"integration_check": "accept_a_payment"},
         )
 
-        address = get_address_for_order(data.shipping_method, data.shipping_details)
-        session.add(address)
-        session.flush()
+        address = create_address_for_order(data.shipping_method, data.shipping_details)
+        if address is not None:
+            session.add(address)
+            session.flush()
+            address_id = address.address_id
+        else:
+            address_id = None
 
         order = Order(
             user_id=user_id,
-            delivery_address_id=address.address_id,
+            delivery_address_id=address_id,
             shipping_method=data.shipping_method,
             total_price=total_price,
             shipping_date=datetime.date.today(),
+            number_nip=data.nip,
+            is_invoice=bool(data.nip),
         )
 
         order.items = [

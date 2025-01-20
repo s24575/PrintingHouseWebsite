@@ -14,6 +14,6 @@ class LoginUser(BaseModel):
     password: constr(min_length=8)
 
 
-class UserResponse(BaseModel):
+class LoginResponse(BaseModel):
     email: EmailStr
     access_token: str

@@ -11,24 +11,22 @@ const stripePromise = loadStripe(
 
 function Payment() {
   const location = useLocation();
-  const { deliveryOption, deliveryDetails } = location.state || {};
+  const { nip, deliveryOption, deliveryDetails } = location.state || {};
 
   const options = {
     mode: "payment",
     amount: 1099,
     currency: "pln",
-    appearance: {
-      theme: "flat",
-      labels: "floating",
-    },
+    locale: "pl",
   };
 
   return (
     <div className="payment-page">
-      <h1>Complete your Payment</h1>
+      <h1>Płatność</h1>
       <div className="payment-form">
         <Elements stripe={stripePromise} options={options}>
           <CheckoutForm
+            nip={nip}
             deliveryOption={deliveryOption}
             deliveryDetails={deliveryDetails}
           />

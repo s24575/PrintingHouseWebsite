@@ -42,10 +42,9 @@ def calculate_price(base_price: Decimal, options: list, quantity: int) -> Decima
     return Decimal(quantity) * (sum([option.price_increment for option in options]) + base_price)
 
 
-def get_address_for_order(shipping_method: ShippingMethod, shipping_details: Any) -> Address | None:
+def create_address_for_order(shipping_method: ShippingMethod, shipping_details: Any) -> Address | None:
     match shipping_method:
         case ShippingMethod.self_pickup:
-            assert shipping_details is None
             return None
         case ShippingMethod.dhl:
             return Address(

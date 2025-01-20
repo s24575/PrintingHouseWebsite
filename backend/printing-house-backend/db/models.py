@@ -186,6 +186,7 @@ class Option(Base):
 class OrderStatus(enum.Enum):
     created = "created"
     in_progress = "in_progress"
+    label_ready = "label_ready"
     completed = "completed"
     canceled = "canceled"
 
@@ -205,6 +206,8 @@ class Order(Base):
     status: Mapped[Enum] = mapped_column(Enum(OrderStatus), default=OrderStatus.created)
     shipping_method: Mapped[Enum] = mapped_column(Enum(ShippingMethod))
     shipping_date: Mapped[str] = mapped_column(Date)
+    is_invoice: Mapped[bool] = mapped_column(Boolean)
+    number_nip: Mapped[str] = mapped_column(String(255))
     created_at: Mapped[str] = mapped_column(TIMESTAMP, default=func.current_timestamp())
     modified_at: Mapped[str] = mapped_column(
         TIMESTAMP, default=func.current_timestamp(), onupdate=func.current_timestamp()

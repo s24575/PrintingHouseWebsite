@@ -6,7 +6,7 @@ import {
 } from "@stripe/react-stripe-js";
 import "./CheckoutForm.css";
 
-const CheckoutForm = ({ deliveryOption, deliveryDetails }) => {
+const CheckoutForm = ({ nip, deliveryOption, deliveryDetails }) => {
   const stripe = useStripe();
   const elements = useElements();
 
@@ -37,6 +37,7 @@ const CheckoutForm = ({ deliveryOption, deliveryDetails }) => {
         Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({
+        "nip": nip,
         "shipping_method": deliveryOption,
         "shipping_details": deliveryDetails,
       }),
@@ -67,9 +68,9 @@ const CheckoutForm = ({ deliveryOption, deliveryDetails }) => {
       <button
         type="submit"
         disabled={!stripe || !elements || isLoading}
-        className={`pay-button ${isLoading ? "loading" : ""}`}
+        className={`pay-button ${isLoading ? "ładowanie" : ""}`}
       >
-        {isLoading ? "Processing..." : "Pay"}
+        {isLoading ? "Przetwarzanie..." : "Zapłać"}
       </button>
       {errorMessage && <div className="error-message">{errorMessage}</div>}
     </form>

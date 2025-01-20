@@ -2,6 +2,7 @@ Flask~=3.0.3
 Flask-CORS
 Flask-Migrate
 Flask-SQLAlchemy
+Flask-JWT-Extended
 SQLAlchemy~=2.0.32
 PyMySQL
 pydantic~=2.9.2

@@ -48,7 +48,6 @@ def add_to_cart():
     user_id = get_jwt_identity()
 
     data = AddCartItemRequest.model_validate_json(request.form.get("data"))
-    x = request.form
     files = request.files.getlist("files")
 
     with Session() as session:

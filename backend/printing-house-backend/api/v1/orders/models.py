@@ -7,6 +7,7 @@ from db.models import ShippingMethod
 
 
 class OrderCreate(BaseModel):
+    nip: str | None
     shipping_method: ShippingMethod
     shipping_details: Any
 
