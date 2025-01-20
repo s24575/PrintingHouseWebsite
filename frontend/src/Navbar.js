@@ -54,10 +54,10 @@ function Navbar() {
                 {!isAuthenticated ? (
                   <>
                     <li className="profile-item">
-                      <Link to="/register">Register</Link>
+                      <Link to="/register">Rejestracja</Link>
                     </li>
                     <li className="profile-item">
-                      <Link to="/login">Login</Link>
+                      <Link to="/login">Logowanie</Link>
                     </li>
                   </>
                 ) : (

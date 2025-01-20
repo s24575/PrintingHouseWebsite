@@ -95,7 +95,8 @@ function ProductDetails() {
 
   const handleFileChange = (e) => {
     const selectedFiles = Array.from(e.target.files);
-    setFiles((prevFiles) => [...prevFiles, ...selectedFiles]);
+    // setFiles((prevFiles) => [...prevFiles, ...selectedFiles]);
+    setFiles(selectedFiles);
   };
 
   const handleRemoveFile = (index) => {
@@ -166,15 +167,15 @@ function ProductDetails() {
       </div>
 
       <div className="file-upload">
-        <h3>Załącz pliki:</h3>
+        <h3>Załącz plik:</h3>
         <label htmlFor="file-input" className="file-upload-area">
-          Przeciągnij i upuść pliki tutaj lub kliknij, aby wybrać
+          Przeciągnij i upuść plik tutaj lub kliknij, aby wybrać
           <input
             id="file-input"
             type="file"
             onChange={handleFileChange}
-            accept=".pdf,image/*"
-            multiple
+            accept=".pdf"
+            // multiple
           />
         </label>
         <div className="file-list">

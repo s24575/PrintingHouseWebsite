@@ -1,7 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+import { useNavigate, useLocation } from "react-router-dom";
+import { AuthContext } from "./AuthContext";
 import "./AuthPage.css";
 
 const RegisterPage = () => {
+  const { login } = useContext(AuthContext);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || "/";
+
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -27,23 +34,26 @@ const RegisterPage = () => {
         },
         body: JSON.stringify(formData),
       });
+
       if (response.ok) {
-        alert("Registration successful! You can now log in.");
+        const data = await response.json();
+        login(data.access_token);
+        navigate(from, { replace: true });
       } else {
         const errorData = await response.json();
-        setError(errorData.message || "Registration failed");
+        setError(errorData.message || "Rejestracja nie powiodła się.");
       }
     } catch (err) {
-      setError("An error occurred. Please try again.");
+      setError("Wystąpił błąd. Spróbuj ponownie później.");
     }
   };
 
   return (
     <div className="auth-form">
       <form onSubmit={handleSubmit}>
-        <h2>Register</h2>
+        <h2>Rejestracja</h2>
         <div className="auth-form-group">
-          <label htmlFor="email">Email</label>
+          <label htmlFor="email">E-mail</label>
           <input
             type="email"
             id="email"
@@ -54,7 +64,7 @@ const RegisterPage = () => {
           />
         </div>
         <div className="auth-form-group">
-          <label htmlFor="password">Password</label>
+          <label htmlFor="password">Hasło</label>
           <input
             type="password"
             id="password"
@@ -66,7 +76,7 @@ const RegisterPage = () => {
           />
         </div>
         <div className="auth-form-group">
-          <label htmlFor="first_name">First Name</label>
+          <label htmlFor="first_name">Imię</label>
           <input
             type="text"
             id="first_name"
@@ -77,7 +87,7 @@ const RegisterPage = () => {
           />
         </div>
         <div className="auth-form-group">
-          <label htmlFor="last_name">Last Name</label>
+          <label htmlFor="last_name">Nazwisko</label>
           <input
             type="text"
             id="last_name"
@@ -88,7 +98,7 @@ const RegisterPage = () => {
           />
         </div>
         <div className="auth-form-group">
-          <label htmlFor="phone_number">Phone Number</label>
+          <label htmlFor="phone_number">Numer telefonu</label>
           <input
             type="text"
             id="phone_number"
@@ -100,7 +110,7 @@ const RegisterPage = () => {
         </div>
         {error && <p className="auth-error">{error}</p>}
         <button type="submit" className="auth-submit">
-          Register
+          Zarejestruj się
         </button>
       </form>
     </div>

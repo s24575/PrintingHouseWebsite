@@ -5,8 +5,8 @@ import { useNavigate } from "react-router-dom";
 
 function Order() {
   const { cart } = useContext(CartContext);
-  const [deliveryOption, setDeliveryOption] = useState("local");
-  const [email, setEmail] = useState("");
+  const [deliveryOption, setDeliveryOption] = useState("self_pickup");
+  const [nip, setNip] = useState("");
   const navigate = useNavigate();
 
   const [city, setCity] = useState("");
@@ -18,6 +18,7 @@ function Order() {
   const handleSubmitOrder = () => {
     navigate("/payment", {
       state: {
+        nip,
         deliveryOption,
         deliveryDetails: {
           "city": city,
@@ -35,12 +36,11 @@ function Order() {
       <h1>Szczegóły dostawy</h1>
 
       <div className="form-group">
-        <label>Email:</label>
+        <label>Numer NIP:</label>
         <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          required
+          type="text"
+          value={nip}
+          onChange={(e) => setNip(e.target.value)}
         />
       </div>
 
@@ -49,20 +49,20 @@ function Order() {
         <div className="delivery-options">
           <div
             className={`delivery-card ${
-              deliveryOption === "local" ? "selected" : ""
+              deliveryOption === "self_pickup" ? "selected" : ""
             }`}
-            onClick={() => setDeliveryOption("local")}
+            onClick={() => setDeliveryOption("self_pickup")}
           >
             <input
               type="radio"
-              id="local"
+              id="self_pickup"
               name="delivery"
               value="local"
-              checked={deliveryOption === "local"}
-              onChange={() => setDeliveryOption("local")}
+              checked={deliveryOption === "self_pickup"}
+              onChange={() => setDeliveryOption("self_pickup")}
               className="hidden-radio"
             />
-            <label htmlFor="local">Odbiór własny</label>
+            <label htmlFor="self_pickup">Odbiór własny</label>
             <p>C.H. Metropolia, Jana Kilińskiego 4, Poziom 0, 80-452 Gdańsk</p>
           </div>
 

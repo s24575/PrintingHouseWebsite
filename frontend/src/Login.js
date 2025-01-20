@@ -11,7 +11,7 @@ const LoginPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const from = location.state?.from?.pathname || "/products";
+  const from = location.state?.from?.pathname || "/";
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -32,19 +32,19 @@ const LoginPage = () => {
         navigate(from, { replace: true });
       } else {
         const errorData = await response.json();
-        setError(errorData.message || "Login failed. Please try again.");
+        setError(errorData.message || "Logowanie nie powiodło się.");
       }
     } catch (err) {
-      setError("Network error. Please try again later.");
+      setError("Wystąpił błąd. Spróbuj ponownie później.");
     }
   };
 
   return (
     <div className="auth-form">
       <form onSubmit={handleSubmit} aria-labelledby="login-heading">
-        <h2 id="login-heading">Login</h2>
+        <h2 id="login-heading">Logowanie</h2>
         <div className="auth-form-group">
-          <label htmlFor="email">Email</label>
+          <label htmlFor="email">E-mail</label>
           <input
             type="email"
             id="email"
@@ -55,7 +55,7 @@ const LoginPage = () => {
           />
         </div>
         <div className="auth-form-group">
-          <label htmlFor="password">Password</label>
+          <label htmlFor="password">Hasło</label>
           <input
             type="password"
             id="password"
@@ -71,7 +71,7 @@ const LoginPage = () => {
           </p>
         )}
         <button className="auth-submit" type="submit">
-          Login
+          Zaloguj się
         </button>
       </form>
     </div>
