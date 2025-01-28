@@ -187,6 +187,7 @@ class OrderStatus(enum.Enum):
     created = "created"
     in_progress = "in_progress"
     label_ready = "label_ready"
+    invoice_ready = "invoice_ready"
     completed = "completed"
     canceled = "canceled"
 
