@@ -1,4 +1,5 @@
 import os
+from datetime import timedelta
 
 from flask import Flask
 
@@ -11,5 +12,6 @@ def init_app(app: Flask):
         # SECRET_KEY=os.environ.get("PRINTING_HOUSE_SECRET_KEY"),
         SQLALCHEMY_DATABASE_URI=os.environ.get("PRINTING_HOUSE_DATABASE_URI"),
         JWT_SECRET_KEY=os.environ.get("JWT_SECRET_KEY"),
+        JWT_ACCESS_TOKEN_EXPIRES=timedelta(hours=1),
         # BASE_URL=os.getenv('BASE_URL', 'http://127.0.0.1:5000'),
     )

@@ -38,7 +38,7 @@ function OrderList() {
   const deliveryLabels = {
     self_pickup: "Odbiór osobisty",
     inpost: "InPost",
-    dhl: "DHL",
+    dhl: "DPD",
   };
 
   return (

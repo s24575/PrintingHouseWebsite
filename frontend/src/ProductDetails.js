@@ -168,16 +168,20 @@ function ProductDetails() {
 
       <div className="file-upload">
         <h3>Załącz plik:</h3>
-        <label htmlFor="file-input" className="file-upload-area">
-          Przeciągnij i upuść plik tutaj lub kliknij, aby wybrać
-          <input
-            id="file-input"
-            type="file"
-            onChange={handleFileChange}
-            accept=".pdf"
-            // multiple
-          />
-        </label>
+        <button
+          type="button"
+          className="file-upload-button"
+          onClick={() => document.getElementById("file-input").click()}
+        >
+          Wybierz plik
+        </button>
+        <input
+          id="file-input"
+          type="file"
+          onChange={handleFileChange}
+          accept=".pdf"
+          style={{ display: "none" }}
+        />
         <div className="file-list">
           {files.map((file, index) => (
             <div key={index} className="file-item">
