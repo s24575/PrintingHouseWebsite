@@ -29,6 +29,8 @@ function OrderList() {
   const statusLabels = {
     created: "Utworzone",
     in_progress: "W trakcie realizacji",
+    invoice_ready: "Utworzono fakturę",
+    label_ready: "Utworzono etykietę",
     completed: "Zakończone",
     canceled: "Anulowane",
   };

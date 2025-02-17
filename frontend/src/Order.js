@@ -66,7 +66,7 @@ function Order() {
             <p>C.H. Metropolia, Jana Kilińskiego 4, Poziom 0, 80-452 Gdańsk</p>
           </div>
 
-          <div
+          {/* <div
             className={`delivery-card ${
               deliveryOption === "inpost" ? "selected" : ""
             }`}
@@ -83,7 +83,7 @@ function Order() {
             />
             <label htmlFor="inpost">InPost</label>
             <p>Wybierz paczkomat w Twojej okolicy.</p>
-          </div>
+          </div> */}
 
           <div
             className={`delivery-card ${
@@ -100,8 +100,8 @@ function Order() {
               onChange={() => setDeliveryOption("dhl")}
               className="hidden-radio"
             />
-            <label htmlFor="dhl">DHL</label>
-            <p>Szybka dostawa przez kuriera DHL.</p>
+            <label htmlFor="dhl">DPD</label>
+            <p>Szybka dostawa przez kuriera DPD.</p>
           </div>
         </div>
       </div>
@@ -136,7 +136,7 @@ function Order() {
             />
           </div>
           <div className="form-group">
-            <label>Numer mieszkania:</label>
+            <label>Numer budynku:</label>
             <input
               type="text"
               value={houseNumber}

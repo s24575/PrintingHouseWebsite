@@ -3,13 +3,12 @@ import datetime
 import stripe
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from sqlalchemy import sql
 from sqlalchemy.orm import joinedload
 
 from api.v1.orders.models import OrderCreate, OrdersResponse, OrderBasicInfo, ItemBasicInfo
 from common.utils import calculate_price, create_address_for_order
 from db.db import Session
-from db.models import Order, CartItem, Item, ItemOption, OrderStatus, Address
+from db.models import Order, CartItem, Item, ItemOption
 
 orders_blueprint = Blueprint("orders", __name__, url_prefix="/order")
 
@@ -19,11 +18,7 @@ orders_blueprint = Blueprint("orders", __name__, url_prefix="/order")
 def get_orders():
     user_id = get_jwt_identity()
     with Session() as session:
-        orders = (
-            session.query(Order)
-            .options(joinedload(Order.items))
-            .filter(sql.and_(Order.user_id == user_id, Order.status != OrderStatus.completed))
-        ).all()
+        orders = (session.query(Order).options(joinedload(Order.items)).filter(Order.user_id == user_id)).all()
 
     return OrdersResponse(
         orders=[
